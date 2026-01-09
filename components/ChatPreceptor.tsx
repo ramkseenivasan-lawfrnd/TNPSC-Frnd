@@ -1,7 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, User, Bot, Loader2, Sparkles, AlertCircle, Copy, Bookmark, Check, Trash2 } from 'lucide-react';
-import { streamExamChat } from '../services/gemini.ts';
+import { streamExamChat, cleanMarkdown } from '../services/gemini.ts';
 import { Message, SavedItem } from '../types.ts';
 import { UI_STRINGS } from '../constants.ts';
 
@@ -65,9 +65,11 @@ const ChatPreceptor: React.FC<ChatPreceptorProps> = ({ language }) => {
       for await (const chunk of streamResponse) {
         const text = chunk.text || '';
         fullText += text;
+        // Clean markdown in real-time
+        const cleanedText = cleanMarkdown(fullText);
         setMessages(prev => {
           const updated = [...prev];
-          updated[updated.length - 1].text = fullText;
+          updated[updated.length - 1].text = cleanedText;
           return updated;
         });
       }
