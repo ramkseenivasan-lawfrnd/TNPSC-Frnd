@@ -7,6 +7,7 @@ import ChatPreceptor from './components/ChatPreceptor.tsx';
 import PYQAnalyzer from './components/PYQAnalyzer.tsx';
 import ExamPredictor from './components/ExamPredictor.tsx';
 import SavedAnswers from './components/SavedAnswers.tsx';
+import ExamStructure from './components/ExamStructure.tsx';
 import Sidebar from './components/Sidebar.tsx';
 import Header from './components/Header.tsx';
 
@@ -28,6 +29,7 @@ const App: React.FC = () => {
       case 'pyq': return <PYQAnalyzer language={language} />;
       case 'predictor': return <ExamPredictor language={language} />;
       case 'saved-answers': return <SavedAnswers language={language} />;
+      case 'exams': return <ExamStructure language={language} />;
       default: return <Dashboard setView={setView} language={language} setLanguage={setLanguage} />;
     }
   };

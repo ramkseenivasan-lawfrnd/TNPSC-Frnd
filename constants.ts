@@ -12,8 +12,9 @@ export const UI_STRINGS = {
     currentAffairs: 'நடப்பு நிகழ்வுகள்',
     aiPreceptor: 'AI பயிற்றுவிப்பாளர்',
     pyqAnalyzer: 'வினாத்தாள் பகுப்பாய்வு',
-    predictor: 'தேர்வு கணிப்பாளர்',
+    predictor: 'எதிர்கால வினா கணிப்பாளர்',
     savedAnswers: 'சேமிக்கப்பட்டவை',
+    exams: 'தேர்வு முறைகள்',
     welcome: 'வணக்கம், தேர்வரே!',
     journey: 'உங்கள் அரசுப் பணி கனவு நனவாக எங்களின் AI கருவிகளைப் பயன்படுத்துங்கள்.',
     startLearning: 'பயிற்சியைத் தொடங்கு',
@@ -41,8 +42,9 @@ export const UI_STRINGS = {
     currentAffairs: 'Current Affairs',
     aiPreceptor: 'AI Preceptor',
     pyqAnalyzer: 'PYQ Analyzer',
-    predictor: 'Exam Predictor',
+    predictor: 'Future Questions Predictor',
     savedAnswers: 'Saved Answers',
+    exams: 'Exam Structure',
     welcome: 'Welcome back, Aspirant!',
     journey: 'Your journey to public service starts with consistency. Use our AI tools.',
     startLearning: 'Start Learning',
@@ -74,32 +76,20 @@ Your core expertise includes:
 2. Unit 8: History, Culture, Heritage and Socio-Political Movements in Tamil Nadu.
 3. Unit 9: Development Administration in Tamil Nadu.
 
-FORMATTING RULE (EXTREMELY IMPORTANT):
-- NEVER use markdown symbols like '**', '###', '##', '#', '*', or '__'.
-- Do NOT use bold or italic symbols.
-- Use PLAIN TEXT only.
-- For headings, use CAPITAL LETTERS (e.g., SYLLABUS UNIT: HISTORY).
-- Use double line breaks to separate paragraphs and sections.
-- Use standard numbering (1., 2., 3.) for lists.
-
-Language & Style Guidelines:
-- PRIMARY LANGUAGE: Tamil is the primary focus. 
-- LANGUAGE MATCHING: You MUST detect the language of the user's input. 
-  - If the user asks in Tamil (தமிழ்), your entire response must be in Tamil.
-  - If the user asks in English, your response must be in English.
-  - If the user uses a mix, provide a bilingual response.
-- Professional, scholarly, and encouraging tone.
-- Contextual: Always link answers back to specific TNPSC syllabus units.
-- Accurate: Use Google Search grounding to verify the latest government policies, data, and current affairs.
-- Impact: Specifically highlight the "Tamil Nadu impact" for national or global news.
-
-You must not provide information unrelated to TNPSC or generic casual chat.
+FORMATTING RULE:
+- Use PLAIN TEXT only. No markdown symbols (** or ###).
+- Use CAPITAL LETTERS for headings.
+- Double line breaks for paragraphs.
 `;
 
 export const PREDICTOR_SYSTEM_INSTRUCTION = `
-Analyze trends from the last 5 years of TNPSC exams to predict high-probability topics.
-Focus on recurring themes in Polity, Economy (Budget/Economic Survey), Unit 8 & 9, and Science.
-Format the output as a set of key focus areas with a 'Probability Score'.
-DO NOT use markdown symbols (** or ###). Use CAPITAL LETTERS for headers.
-LANGUAGE RULE: Respond strictly in the language used by the user in their request.
+You are the TNPSC_Frnd Future Questions Prediction Engine.
+
+STRICT PROTOCOL:
+1. TARGET: GENERATE EXACTLY 100 FUTURE QUESTIONS.
+2. LOGIC: Analyze provided historical papers + 2024-2025 Current Affairs (TN Govt Schemes, Central Budget, Science & Tech). Focus on the 2025 exam cycle.
+3. OUTPUT FORMAT: 
+   [Number]. Q: [English Question] / வி: [Tamil Question] | Ans: [Answer]
+4. NO MARKDOWN: NO symbols like **, ##, or #. Use CAPITAL LETTERS for topic headers.
+5. BILINGUAL: Every question MUST be in both English and Tamil.
 `;

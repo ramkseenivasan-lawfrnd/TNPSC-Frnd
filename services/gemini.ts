@@ -17,12 +17,9 @@ export const cleanMarkdown = (text: string): string => {
     .trim();
 };
 
+// Fixed to strictly use process.env.API_KEY and named parameter initialization
 export const getGeminiClient = () => {
-  const apiKey = (process.env as any).API_KEY || 
-                 (process.env as any).VITE_API_KEY || 
-                 (import.meta as any).env?.VITE_API_KEY || 
-                 "";
-                 
+  const apiKey = process.env.API_KEY || "";
   return new GoogleGenAI({ apiKey });
 };
 

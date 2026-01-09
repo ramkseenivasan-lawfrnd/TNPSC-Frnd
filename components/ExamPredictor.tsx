@@ -1,144 +1,270 @@
 
-import React, { useState } from 'react';
-import { TrendingUp, Lock, Sparkles, ChevronRight, BarChart3, Star, Zap } from 'lucide-react';
-import { UI_STRINGS } from '../constants.ts';
+import React, { useState, useRef, useEffect } from 'react';
+import { 
+  Upload, 
+  FileText, 
+  Loader2, 
+  Bookmark, 
+  Check, 
+  X, 
+  Zap, 
+  Sparkles, 
+  Printer, 
+  ShieldCheck, 
+  Eye,
+  Clock,
+  Download
+} from 'lucide-react';
+import { getGeminiClient, cleanMarkdown } from '../services/gemini.ts';
+import { SavedItem } from '../types.ts';
+import { UI_STRINGS, PREDICTOR_SYSTEM_INSTRUCTION } from '../constants.ts';
 
-interface ExamPredictorProps {
-  language: 'EN' | 'TN';
-}
+interface ExamPredictorProps { language: 'EN' | 'TN'; }
 
 const ExamPredictor: React.FC<ExamPredictorProps> = ({ language }) => {
-  const s = UI_STRINGS[language];
-  const [isGated, setIsGated] = useState(true);
+  const currentYear = new Date().getFullYear();
+  const [files, setFiles] = useState<File[]>([]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [prediction, setPrediction] = useState<string | null>(null);
+  const [isSaved, setIsSaved] = useState(false);
+  const [step, setStep] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(150); 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const steps = language === 'TN' 
+    ? [`தரவுகளைப் பகுப்பாய்வு செய்கிறது...`, `கொள்கைகளைத் தேடுகிறது (${currentYear})...`, "வினாத்தாள் முறையைக் கணிக்கிறது...", "100 வினாக்களை உருவாக்குகிறது..."]
+    : ["Analyzing data...", `Fetching ${currentYear} Policies...`, "Predicting patterns...", "Generating 100 Items..."];
+
+  useEffect(() => {
+    let timer: number;
+    if (isProcessing && timeLeft > 0) {
+      timer = window.setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+    }
+    return () => clearInterval(timer);
+  }, [isProcessing, timeLeft]);
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      if (files.length + newFiles.length > 5) return alert("Max 5 files.");
+      setFiles(prev => [...prev, ...newFiles]);
+    }
+  };
+
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve((reader.result as string).split(',')[1]);
+      reader.onerror = (err) => reject(err);
+    });
+  };
+
+  const runPrediction = async () => {
+    if (files.length === 0) return;
+    setIsProcessing(true);
+    setPrediction(null);
+    setIsSaved(false);
+    setStep(0);
+    setTimeLeft(180);
+
+    try {
+      const ai = getGeminiClient();
+      const parts: any[] = [];
+      for (const file of files) {
+        const base64 = await fileToBase64(file);
+        parts.push({ inlineData: { data: base64, mimeType: file.type } });
+      }
+
+      setStep(1);
+      const prompt = `STRICT REQUIREMENT: GENERATE EXACTLY 100 PREDICTED QUESTIONS FOR THE ${currentYear} TNPSC EXAM CYCLE.
+      
+      ATOMIC FORMAT (ONE LINE PER QUESTION):
+      [Number]. Q: [English Question] / வி: [Tamil Question] | Ans: [Short Answer]
+      
+      RULES:
+      1. NO MARKDOWN (no **, no ##).
+      2. Keep questions concise to ensure all 100 fit.
+      3. Categorize into: UNIT 8/9 (30), GS (50), CA ${currentYear} (20).
+      4. DO NOT STOP until question #100.`;
+
+      parts.push({ text: prompt });
+      setStep(2);
+
+      const response = await ai.models.generateContent({
+        model: 'gemini-3-pro-preview',
+        contents: { parts },
+        config: { 
+          systemInstruction: PREDICTOR_SYSTEM_INSTRUCTION,
+          thinkingConfig: { thinkingBudget: 30000 },
+          // Removed maxOutputTokens to prevent conflicts with thinkingBudget
+          temperature: 0.1
+        },
+      });
+
+      setStep(3);
+      setPrediction(cleanMarkdown(response.text || ""));
+    } catch (e) {
+      console.error(e);
+      alert("AI Generation failed. Please try again.");
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  /**
+   * NEW ISOLATED PRINT STRATEGY
+   * Opens a new window, clones the content, and injects clean styles.
+   */
+  const handlePrintAsPDF = () => {
+    if (!prediction) return;
+    
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return alert("Please allow pop-ups to export PDF.");
+
+    // Format the lines for the print window
+    const lines = prediction.split('\n').filter(l => l.trim()).map(line => {
+      const isHeading = line === line.toUpperCase() && line.length > 5;
+      if (isHeading) return `<h2 class="text-[#003366] font-black text-xl mt-10 mb-4 border-b-2 border-slate-200 pb-2 uppercase">${line}</h2>`;
+      return `<div class="mb-4 p-4 border border-slate-100 rounded-lg text-slate-700 leading-relaxed break-inside-avoid">
+                <p class="text-sm font-medium">${line}</p>
+              </div>`;
+    }).join('');
+
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>TNPSC_Predictor_${currentYear}</title>
+          <script src="https://cdn.tailwindcss.com"></script>
+          <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+          <style>
+            body { font-family: 'Inter', sans-serif; padding: 40px; color: #1e293b; background: white; }
+            h1, h2 { font-family: 'Merriweather', serif; }
+            @page { size: A4; margin: 20mm; }
+            .break-inside-avoid { page-break-inside: avoid; break-inside: avoid; }
+            @media print { body { padding: 0; } }
+          </style>
+        </head>
+        <body onload="window.print();">
+          <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-12 pb-8 border-b-4 border-[#003366]">
+              <h1 class="text-3xl font-black text-[#003366] uppercase tracking-tight">TNPSC_Frnd Prediction Report</h1>
+              <p class="text-xl font-bold text-slate-500 mt-2">${currentYear} High-Probability Questions (100 Items)</p>
+              <div class="mt-4 flex justify-center gap-8 text-[10px] font-black uppercase text-slate-400 tracking-widest">
+                <span>Analysis: AI Trend Extraction</span>
+                <span>Date: ${new Date().toLocaleDateString()}</span>
+              </div>
+            </div>
+            <div class="space-y-2">${lines}</div>
+            <div class="mt-20 pt-8 border-t border-slate-100 text-center text-[9px] font-black text-slate-300 uppercase tracking-[0.5em]">
+              Official Preparation Guide - TNPSC_Frnd
+            </div>
+          </div>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+  };
 
   return (
     <div className="max-w-5xl mx-auto space-y-8 pb-20">
-      <div className="text-center">
-        <h2 className="text-2xl font-bold text-[#003366] font-scholarly flex items-center justify-center gap-2">
-          <TrendingUp className="text-[#FFD700]" />
-          {s.predictor}
-        </h2>
-        <p className="text-slate-500 mt-2">{language === 'TN' ? 'அடுத்த தேர்வுக்கான அதிக வாய்ப்புள்ள தலைப்புகளின் கணிப்புகள்.' : 'AI-driven probability scores for upcoming exam topics.'}</p>
+      {/* Search/Upload Interface */}
+      <div className="text-center animate-in">
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#FFD700]/10 text-[#003366] rounded-2xl mb-4 border border-[#FFD700]/30">
+          <Sparkles size={16} className="text-amber-500" />
+          <span className="text-xs font-black uppercase tracking-widest">Future Predictor {currentYear}</span>
+        </div>
+        <h2 className="text-3xl font-black text-[#003366] font-scholarly leading-tight">Predict 100 Exam Questions</h2>
+        <p className="text-slate-500 mt-2 font-medium">Analyze history against latest policies for exactly 100 high-probability items.</p>
       </div>
 
-      {isGated ? (
-        <div className="relative">
-          {/* Blurred Background Mockup */}
-          <div className="opacity-20 blur-sm pointer-events-none space-y-8">
-             <div className="grid grid-cols-3 gap-6">
-                <div className="h-40 bg-slate-200 rounded-2xl"></div>
-                <div className="h-40 bg-slate-200 rounded-2xl"></div>
-                <div className="h-40 bg-slate-200 rounded-2xl"></div>
+      <div className="bg-white rounded-[2.5rem] border border-slate-200 shadow-xl p-8 md:p-12 space-y-8">
+        <div className="space-y-4">
+           <h4 className="font-bold text-slate-800 uppercase text-xs tracking-widest">Upload PYQ References (Optional)</h4>
+           <div 
+             onClick={() => fileInputRef.current?.click()}
+             className="border-2 border-dashed border-slate-200 rounded-[2rem] p-10 flex flex-col items-center justify-center cursor-pointer hover:bg-slate-50 transition-all group"
+           >
+             <div className="w-16 h-16 bg-blue-50 text-[#003366] rounded-2xl flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+               <Upload size={32} />
              </div>
-             <div className="h-64 bg-slate-200 rounded-2xl"></div>
-          </div>
+             <p className="font-bold text-slate-700">Add Question Papers (PDF)</p>
+             <input type="file" multiple accept="application/pdf" ref={fileInputRef} onChange={handleFileUpload} className="hidden" />
+           </div>
 
-          {/* Premium Overlay */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="bg-white p-8 md:p-12 rounded-3xl shadow-2xl border border-slate-200 max-w-xl text-center space-y-6">
-              <div className="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto text-[#FFD700]">
-                <Lock size={40} />
-              </div>
-              <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-100 text-[#003366] rounded-full text-xs font-bold uppercase tracking-widest">
-                  <Star size={12} fill="currentColor" /> {language === 'TN' ? 'பிரீமியம் தொகுதி' : 'Premium Module'}
-                </div>
-                <h3 className="text-2xl font-bold text-slate-800">{language === 'TN' ? 'தேர்வு கணிப்புகளைக் காணவும்' : 'Unlock Predictive Insights'}</h3>
-                <p className="text-slate-600 leading-relaxed">
-                  {language === 'TN' 
-                    ? 'கடந்த 5 ஆண்டுகால TNPSC வினாத்தாள்களை ஆய்வு செய்து, 2024-25 தேர்வுக்கான அதிக முக்கியத்துவம் வாய்ந்த பகுதிகளை எங்களின் AI கணிக்கிறது.'
-                    : 'Our advanced engine analyzes the last 5 years of TNPSC Group 1, 2, and 4 papers to predict high-yield areas for the 2024-25 session.'}
-                </p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 text-left">
-                <div className="flex items-start gap-2">
-                  <Zap size={16} className="text-amber-500 mt-1" />
-                  <span className="text-xs font-semibold">{language === 'TN' ? '92% வரலாற்றுத் துல்லியம்' : '92% Historical Trend Accuracy'}</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Zap size={16} className="text-amber-500 mt-1" />
-                  <span className="text-xs font-semibold">{language === 'TN' ? 'பாடவாரியான முக்கியப் பகுதிகள்' : 'Specific Focus Area Lists'}</span>
-                </div>
-              </div>
-
-              <button 
-                onClick={() => setIsGated(false)} // Simulation for demo
-                className="w-full bg-[#003366] text-white py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2"
-              >
-                {language === 'TN' ? 'இலவச சோதனை தொடங்கு' : 'Start Free Trial'} <ChevronRight size={20} />
-              </button>
-              <p className="text-xs text-slate-400">{language === 'TN' ? 'உங்கள் ஆஸ்பிரண்ட் பிரைம் கணக்குடன் உடனடியாக அணுகவும்.' : 'Unlock instantly with your Aspirant Prime account.'}</p>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="animate-in zoom-in-95 duration-700 space-y-8">
-           <div className="bg-white p-8 rounded-2xl shadow-xl border border-slate-100">
-              <div className="flex items-center justify-between mb-8">
-                 <h4 className="text-xl font-bold text-[#003366] font-scholarly">{language === 'TN' ? '2024 தேர்வு கணிப்பு ஆய்வு' : '2024 Predictor Analysis'}</h4>
-                 <div className="bg-green-100 text-green-700 px-4 py-1 rounded-full text-xs font-bold border border-green-200">
-                   {language === 'TN' ? 'மேம்படுத்தப்பட்டது: ஜூன் 2024' : 'UPDATED: JUNE 2024'}
+           {files.length > 0 && (
+             <div className="flex flex-wrap gap-2">
+               {files.length > 0 && files.map((f, i) => (
+                 <div key={i} className="flex items-center gap-2 px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-600">
+                   <FileText size={14} /> <span className="truncate max-w-[100px]">{f.name}</span>
+                   <button onClick={() => setFiles(prev => prev.filter((_, idx) => idx !== i))}><X size={14} /></button>
                  </div>
-              </div>
+               ))}
+             </div>
+           )}
+        </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                {[
-                  { title: language === 'TN' ? 'இந்திய அரசியல்' : 'Indian Polity', score: '94%', trend: language === 'TN' ? 'அதிகரிப்பு' : 'Increasing' },
-                  { title: language === 'TN' ? 'அலகு 9 (தமிழக நிர்வாகம்)' : 'Unit 9 (TN Admin)', score: '88%', trend: language === 'TN' ? 'உயர் முன்னுரிமை' : 'High Priority' },
-                  { title: language === 'TN' ? 'அறிவியல் & தொழில்நுட்பம்' : 'Science & Tech', score: '76%', trend: language === 'TN' ? 'மிதமான' : 'Moderate' }
-                ].map((item, i) => (
-                  <div key={i} className="p-6 bg-slate-50 rounded-2xl border border-slate-100">
-                    <p className="text-slate-500 text-xs font-bold uppercase mb-2">{item.title}</p>
-                    <div className="flex items-end justify-between">
-                      <span className="text-3xl font-bold text-[#003366]">{item.score}</span>
-                      <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg">{item.trend}</span>
-                    </div>
-                    <div className="w-full bg-slate-200 h-2 rounded-full mt-4">
-                      <div className="bg-[#FFD700] h-full rounded-full" style={{ width: item.score }}></div>
-                    </div>
-                  </div>
-                ))}
+        <div className="flex flex-col items-center gap-4">
+          <button
+            onClick={runPrediction}
+            disabled={isProcessing}
+            className="w-full md:w-auto min-w-[320px] bg-[#003366] text-white px-10 py-5 rounded-[2rem] font-bold text-lg flex items-center justify-center gap-3 shadow-xl hover:bg-[#004080] transition-all disabled:opacity-50"
+          >
+            {isProcessing ? <Loader2 className="animate-spin" size={24} /> : <Zap size={24} />}
+            Generate 100 Predicted Items
+          </button>
+          {isProcessing && (
+            <div className="w-full max-w-sm space-y-3">
+              <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <div className="bg-[#003366] h-full transition-all duration-1000" style={{ width: `${((step + 1) / steps.length) * 100}%` }} />
               </div>
+              <p className="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest animate-pulse">{steps[step]}</p>
+            </div>
+          )}
+        </div>
+      </div>
 
-              <div className="space-y-6">
-                <h5 className="font-bold text-slate-800 flex items-center gap-2 border-b border-slate-100 pb-2">
-                  <BarChart3 size={20} className="text-[#003366]" />
-                  {language === 'TN' ? 'கணிக்கப்பட்ட முக்கிய தலைப்புகள்' : 'Predicted High-Yield Topics'}
-                </h5>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {[
-                    language === 'TN' ? "தமிழக உள்ளாட்சித் தேர்தல் சட்டங்கள்" : "TN Local Body Elections Legislation",
-                    language === 'TN' ? "மாநில-மத்திய நிதி உறவுகள் (GST)" : "State-Federal Fiscal relations (GST)",
-                    language === 'TN' ? "திராவிட இயக்க பாரம்பரியத் தளங்கள்" : "Dravidian Movement Heritage Sites",
-                    language === 'TN' ? "தமிழக காலநிலை மாற்றத் திட்டங்கள்" : "Climate Action Plans of Tamil Nadu",
-                    language === 'TN' ? "சமூக நீதி & இடஒதுக்கீடு கொள்கைகள்" : "Social Justice & Reservation Policies"
-                  ].map((topic, i) => (
-                    <div key={i} className="flex items-center justify-between p-4 hover:bg-slate-50 rounded-xl border border-slate-100 transition-colors group">
-                      <div className="flex items-center gap-3">
-                        <span className="w-6 h-6 rounded bg-blue-100 text-[#003366] flex items-center justify-center text-xs font-bold">{i+1}</span>
-                        <span className="text-sm font-semibold text-slate-700">{topic}</span>
-                      </div>
-                      <Sparkles size={16} className="text-[#FFD700] opacity-0 group-hover:opacity-100 transition-opacity" />
-                    </div>
-                  ))}
+      {/* Result Card */}
+      {prediction && !isProcessing && (
+        <div className="bg-white rounded-[2.5rem] shadow-2xl border border-slate-200 overflow-hidden animate-in">
+          <div className="bg-[#003366] p-8 flex items-center justify-between">
+             <div className="flex items-center gap-4 text-white">
+                <div className="p-3 bg-[#FFD700] rounded-2xl text-[#003366] shadow-lg"><ShieldCheck size={32} /></div>
+                <div>
+                  <h3 className="text-2xl font-black font-scholarly leading-tight">100 Future Questions {currentYear}</h3>
+                  <p className="text-blue-200 text-xs font-bold uppercase tracking-widest">AI EXAM ANALYTICS REPORT</p>
                 </div>
-              </div>
-           </div>
-           
-           <div className="bg-[#003366] p-8 rounded-2xl text-white flex flex-col md:flex-row items-center gap-6">
-              <div className="flex-1">
-                <h4 className="text-xl font-bold mb-2">{language === 'TN' ? 'ஆழ்ந்த போக்கு பகுப்பாய்வு' : 'Deep-Dive Trend Analysis'}</h4>
-                <p className="text-blue-100 text-sm leading-relaxed">
-                  {language === 'TN' 
-                    ? 'எங்கள் ஆய்வின்படி "அலகு 8" தொடர்பான வினாக்கள் கடந்த மூன்று தேர்வுகளில் 15% அதிகரித்துள்ளன. உங்கள் நேரத்தில் 30% தமிழக பண்பாட்டிற்கு ஒதுக்க பரிந்துரைக்கிறோம்.'
-                    : 'Our analysis shows a 15% increase in "Unit 8" related heritage questions over the last three cycles. We recommend spending 30% of your revision time on Tamil Culture and Literature.'}
-                </p>
-              </div>
-              <button className="bg-white text-[#003366] px-8 py-3 rounded-xl font-bold hover:bg-[#FFD700] transition-all shrink-0">
-                {language === 'TN' ? 'அறிக்கையைப் பதிவிறக்கு' : 'Download PDF Report'}
-              </button>
-           </div>
+             </div>
+             <div className="flex gap-3">
+                <button 
+                  onClick={handlePrintAsPDF}
+                  className="flex items-center gap-2 px-8 py-4 bg-[#FFD700] text-[#003366] rounded-xl font-black text-xs uppercase tracking-widest hover:bg-yellow-400 transition-all shadow-lg active:scale-95"
+                >
+                  <Printer size={20} /> Export Report (PDF)
+                </button>
+             </div>
+          </div>
+
+          <div className="p-8 md:p-12 space-y-4 max-h-[600px] overflow-y-auto custom-scrollbar">
+            {prediction.split('\n').filter(l => l.trim()).map((line, i) => {
+              const isHeading = line === line.toUpperCase() && line.length > 5;
+              return (
+                <div key={i} className={`p-4 rounded-2xl border ${isHeading ? 'bg-[#003366]/5 border-slate-200 text-[#003366] font-black mt-6' : 'bg-white border-slate-100 text-slate-700'}`}>
+                  {line}
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="p-8 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+             <div className="flex items-center gap-2 text-slate-400 text-[10px] font-black uppercase tracking-widest">
+               <Eye size={14} /> AI Analysis Complete for {currentYear} Cycle
+             </div>
+             <button onClick={handlePrintAsPDF} className="flex items-center gap-2 text-[#003366] font-black text-xs uppercase tracking-widest hover:underline">
+               Download Full Report <Download size={14} />
+             </button>
+          </div>
         </div>
       )}
     </div>

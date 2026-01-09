@@ -7,7 +7,8 @@ import {
   FileQuestion, 
   TrendingUp,
   Bookmark,
-  X
+  X,
+  GraduationCap
 } from 'lucide-react';
 import { AppView } from '../types.ts';
 import { UI_STRINGS } from '../constants.ts';
@@ -24,6 +25,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, isOpen, toggle,
   const s = UI_STRINGS[language];
   const navItems = [
     { id: 'dashboard', icon: LayoutDashboard, label: s.dashboard },
+    { id: 'exams', icon: GraduationCap, label: s.exams },
     { id: 'current-affairs', icon: Newspaper, label: s.currentAffairs },
     { id: 'chat', icon: MessageSquare, label: s.aiPreceptor },
     { id: 'pyq', icon: FileQuestion, label: s.pyqAnalyzer },

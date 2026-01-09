@@ -20,6 +20,7 @@ const Header: React.FC<HeaderProps> = ({ viewId, language, setLanguage, toggleSi
       case 'pyq': return s.pyqAnalyzer;
       case 'predictor': return s.predictor;
       case 'saved-answers': return s.savedAnswers;
+      case 'exams': return s.exams;
       default: return '';
     }
   };
