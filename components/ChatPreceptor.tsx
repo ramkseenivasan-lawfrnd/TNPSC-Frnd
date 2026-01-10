@@ -15,8 +15,8 @@ const ChatPreceptor: React.FC<ChatPreceptorProps> = ({ language }) => {
     { 
       role: 'model', 
       text: language === 'TN' 
-        ? 'வணக்கம்! நான் உங்கள் AI பயிற்றுவிப்பாளர். வரலாறு முதல் அலகு 9 வரை TNPSC பாடத்திட்டத்தின் எந்தவொரு தலைப்பைப் பற்றியும் நான் விளக்குவேன். இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்?' 
-        : 'Vanakkam! I am your AI Preceptor. I can explain complex TNPSC syllabus topics from History to Unit 9. How can I help you today?' 
+        ? 'வணக்கம்! நான் உங்கள் AI பயிற்றுவிப்பாளர். TNPSC பாடத்திட்டத்தின் தலைப்புகளை நான் விளக்குவேன். இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்?' 
+        : 'Vanakkam! I am your AI Preceptor. I can explain complex TNPSC syllabus topics . How can I help you today?' 
     }
   ]);
   const [input, setInput] = useState('');
@@ -30,8 +30,8 @@ const ChatPreceptor: React.FC<ChatPreceptorProps> = ({ language }) => {
       setMessages([{ 
         role: 'model', 
         text: language === 'TN' 
-          ? 'வணக்கம்! நான் உங்கள் AI பயிற்றுவிப்பாளர். வரலாறு முதல் அலகு 9 வரை TNPSC பாடத்திட்டத்தின் எந்தவொரு தலைப்பைப் பற்றியும் நான் விளக்குவேன். இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்?' 
-          : 'Vanakkam! I am your AI Preceptor. I can explain complex TNPSC syllabus topics from History to Unit 9. How can I help you today?' 
+          ? 'வணக்கம்! நான் உங்கள் AI பயிற்றுவிப்பாளர். TNPSC பாடத்திட்டத்தின் தலைப்புகளை நான் விளக்குவேன். இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்?' 
+          : 'Vanakkam! I am your AI Preceptor. I can explain complex TNPSC syllabus topics . How can I help you today?' 
       }]);
     }
   }, [language]);
@@ -120,8 +120,8 @@ const ChatPreceptor: React.FC<ChatPreceptorProps> = ({ language }) => {
         { 
           role: 'model', 
           text: language === 'TN' 
-            ? 'வணக்கம்! நான் உங்கள் AI பயிற்றுவிப்பாளர். வரலாறு முதல் அலகு 9 வரை TNPSC பாடத்திட்டத்தின் எந்தவொரு தலைப்பைப் பற்றியும் நான் விளக்குவேன். இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்?' 
-            : 'Vanakkam! I am your AI Preceptor. I can explain complex TNPSC syllabus topics from History to Unit 9. How can I help you today?' 
+            ? 'வணக்கம்! நான் உங்கள் AI பயிற்றுவிப்பாளர். TNPSC பாடத்திட்டத்தின் தலைப்புகளை நான் விளக்குவேன். இன்று நான் உங்களுக்கு எப்படி உதவ முடியும்?' 
+            : 'Vanakkam! I am your AI Preceptor. I can explain complex TNPSC syllabus topics . How can I help you today?' 
         }
       ]);
       setSavedIndices(new Set());

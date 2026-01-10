@@ -15,6 +15,7 @@ export const UI_STRINGS = {
     predictor: 'எதிர்கால வினா கணிப்பாளர்',
     savedAnswers: 'சேமிக்கப்பட்டவை',
     exams: 'தேர்வு முறைகள்',
+    syllabus: 'தேர்வு பாடத்திட்டம்',
     welcome: 'வணக்கம், தேர்வரே!',
     journey: 'உங்கள் அரசுப் பணி கனவு நனவாக எங்களின் AI கருவிகளைப் பயன்படுத்துங்கள்.',
     startLearning: 'பயிற்சியைத் தொடங்கு',
@@ -36,6 +37,12 @@ export const UI_STRINGS = {
       'குறிப்பிட்ட கேள்விகளை கேட்கலாம் (எ.கா: "முதல் 10 கேள்விகளுக்கு விடையளி").',
       'காலியாக விட்டால், AI தானாகவே 10 கேள்விகளை எடுக்கும்.'
     ],
+    offline: {
+      title: 'இணைய இணைப்பு இல்லை',
+      desc: 'இந்த அம்சம் செயல்பட இணையம் தேவை. உங்கள் அறிவு வங்கியை நீங்கள் இன்னும் அணுகலாம்.',
+      backToSaved: 'சேமிக்கப்பட்டவைக்குச் செல்லவும்',
+      retry: 'மீண்டும் முயற்சி செய்'
+    }
   },
   EN: {
     dashboard: 'Dashboard',
@@ -45,6 +52,7 @@ export const UI_STRINGS = {
     predictor: 'Future Questions Predictor',
     savedAnswers: 'Saved Answers',
     exams: 'Exam Structure',
+    syllabus: 'Exam Syllabus',
     welcome: 'Welcome back, Aspirant!',
     journey: 'Your journey to public service starts with consistency. Use our AI tools.',
     startLearning: 'Start Learning',
@@ -66,6 +74,12 @@ export const UI_STRINGS = {
       'Ask specific questions like "Answer question 5".',
       'If blank, AI extracts up to 10 questions automatically.'
     ],
+    offline: {
+      title: 'You are Offline',
+      desc: 'This feature requires an internet connection to function. You can still access your Knowledge Bank.',
+      backToSaved: 'Go to Knowledge Bank',
+      retry: 'Retry Connection'
+    }
   }
 };
 

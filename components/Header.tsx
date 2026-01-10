@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { Menu, Bell } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Menu, Bell, Wifi, WifiOff } from 'lucide-react';
 import { UI_STRINGS } from '../constants.ts';
 
 interface HeaderProps {
@@ -11,6 +11,21 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ viewId, language, setLanguage, toggleSidebar }) => {
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
   const getLocalizedTitle = () => {
     const s = UI_STRINGS[language];
     switch (viewId) {
@@ -21,6 +36,7 @@ const Header: React.FC<HeaderProps> = ({ viewId, language, setLanguage, toggleSi
       case 'predictor': return s.predictor;
       case 'saved-answers': return s.savedAnswers;
       case 'exams': return s.exams;
+      case 'syllabus': return s.syllabus;
       default: return '';
     }
   };
@@ -34,14 +50,28 @@ const Header: React.FC<HeaderProps> = ({ viewId, language, setLanguage, toggleSi
         >
           <Menu size={22} className="text-[#003366]" />
         </button>
-        <h2 className={`font-black text-[#003366] tracking-tight font-scholarly truncate max-w-[150px] sm:max-w-none transition-all ${
-          language === 'TN' ? 'text-sm md:text-lg' : 'text-base md:text-xl'
-        }`}>
-          {getLocalizedTitle()}
-        </h2>
+        <div className="flex flex-col">
+          <h2 className={`font-black text-[#003366] tracking-tight font-scholarly truncate max-w-[150px] sm:max-w-none transition-all ${
+            language === 'TN' ? 'text-sm md:text-lg' : 'text-base md:text-xl'
+          }`}>
+            {getLocalizedTitle()}
+          </h2>
+          {!isOnline && (
+            <span className="text-[9px] font-black text-red-500 uppercase tracking-widest flex items-center gap-1 animate-pulse">
+              <WifiOff size={10} /> {language === 'TN' ? 'ஆஃப்லைன்' : 'Offline'}
+            </span>
+          )}
+        </div>
       </div>
 
       <div className="flex items-center gap-3 md:gap-6">
+        <div className="hidden sm:flex items-center gap-2 mr-4 text-slate-400">
+           {isOnline ? <Wifi size={14} className="text-green-500" /> : <WifiOff size={14} className="text-red-500" />}
+           <span className="text-[10px] font-black uppercase tracking-widest">
+             {isOnline ? (language === 'TN' ? 'இணைக்கப்பட்டுள்ளது' : 'Connected') : (language === 'TN' ? 'ஆஃப்லைன்' : 'Offline')}
+           </span>
+        </div>
+
         <div className="flex items-center bg-slate-100 rounded-xl p-1 shadow-inner border border-slate-200/50">
           <button 
             onClick={() => setLanguage('TN')}
