@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { Menu, Bell, Wifi, WifiOff } from 'lucide-react';
-import { UI_STRINGS } from '../constants.ts';
+import { UI_STRINGS, DEFAULT_NOTIFICATIONS } from '../constants.ts';
+import { AdminNotification, AppView } from '../types.ts';
 
 interface HeaderProps {
   viewId: string;
@@ -12,6 +13,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ viewId, language, setLanguage, toggleSidebar }) => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [notifCount, setNotifCount] = useState(0);
 
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -20,9 +22,26 @@ const Header: React.FC<HeaderProps> = ({ viewId, language, setLanguage, toggleSi
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
+    // Initial count
+    const updateCount = () => {
+      const saved = localStorage.getItem('tnpsc_admin_notifications');
+      if (saved) {
+        const parsed: AdminNotification[] = JSON.parse(saved);
+        setNotifCount(parsed.filter(n => n.isActive).length);
+      } else {
+        setNotifCount(DEFAULT_NOTIFICATIONS.filter(n => n.isActive).length);
+      }
+    };
+
+    updateCount();
+
+    // Listen for local changes to notifications
+    const interval = setInterval(updateCount, 2000);
+
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
+      clearInterval(interval);
     };
   }, []);
 
@@ -37,8 +56,21 @@ const Header: React.FC<HeaderProps> = ({ viewId, language, setLanguage, toggleSi
       case 'saved-answers': return s.savedAnswers;
       case 'exams': return s.exams;
       case 'syllabus': return s.syllabus;
+      case 'admin-login': return language === 'TN' ? 'அதிகாரி உள்நுழைவு' : 'Officer Login';
+      case 'admin-dashboard': return language === 'TN' ? 'நிர்வாகத் தளம்' : 'Officer Dashboard';
       default: return '';
     }
+  };
+
+  const handleNotifClick = () => {
+    // If not on dashboard, switch to it
+    if (viewId !== 'dashboard') {
+      // In a real world app we'd use a context or global dispatcher
+      // Here we assume the parent 'App' listens to some event or we trigger a scroll flag
+      window.dispatchEvent(new CustomEvent('switch-view', { detail: 'dashboard' }));
+    }
+    // Set a flag to trigger scroll in Dashboard component
+    localStorage.setItem('tnpsc_scroll_to_notifs', 'true');
   };
 
   return (
@@ -87,9 +119,16 @@ const Header: React.FC<HeaderProps> = ({ viewId, language, setLanguage, toggleSi
           </button>
         </div>
         
-        <button className="p-2.5 hover:bg-slate-100 rounded-xl relative text-slate-600 transition-colors group">
-          <Bell size={22} />
-          <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white group-hover:animate-bounce"></span>
+        <button 
+          onClick={handleNotifClick}
+          className="p-2.5 hover:bg-slate-100 rounded-xl relative text-slate-600 transition-colors group"
+        >
+          <Bell size={22} className="group-hover:animate-swing" />
+          {notifCount > 0 && (
+            <span className="absolute top-2 right-2 min-w-[18px] h-[18px] bg-red-500 text-white rounded-full border-2 border-white group-hover:scale-110 text-[9px] font-bold flex items-center justify-center px-1 transition-transform">
+              {notifCount}
+            </span>
+          )}
         </button>
       </div>
     </header>

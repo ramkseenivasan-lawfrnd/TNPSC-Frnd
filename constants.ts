@@ -6,6 +6,11 @@ export const COLORS = {
   white: '#FFFFFF',
 };
 
+export const ADMIN_CREDENTIALS = {
+  email: 'sslegalaidcenter@gmail.com',
+  password: 'Ramktnpscfrnd'
+};
+
 export const UI_STRINGS = {
   TN: {
     dashboard: 'முகப்பு',
@@ -16,6 +21,7 @@ export const UI_STRINGS = {
     savedAnswers: 'சேமிக்கப்பட்டவை',
     exams: 'தேர்வு முறைகள்',
     syllabus: 'தேர்வு பாடத்திட்டம்',
+    studyPlan: 'படிப்புத் திட்டம்',
     welcome: 'வணக்கம், தேர்வரே!',
     journey: 'உங்கள் அரசுப் பணி கனவு நனவாக எங்களின் AI கருவிகளைப் பயன்படுத்துங்கள்.',
     startLearning: 'பயிற்சியைத் தொடங்கு',
@@ -53,6 +59,7 @@ export const UI_STRINGS = {
     savedAnswers: 'Saved Answers',
     exams: 'Exam Structure',
     syllabus: 'Exam Syllabus',
+    studyPlan: 'Study Plan',
     welcome: 'Welcome back, Aspirant!',
     journey: 'Your journey to public service starts with consistency. Use our AI tools.',
     startLearning: 'Start Learning',
@@ -82,6 +89,17 @@ export const UI_STRINGS = {
     }
   }
 };
+
+export const DEFAULT_NOTIFICATIONS = [
+  {
+    id: '1',
+    title: 'Group II Prelims 2025',
+    description: 'Official Notification for Combined Civil Services Examination - II.',
+    applyLink: 'https://www.tnpsc.gov.in',
+    date: 'July 20, 2025',
+    isActive: true
+  }
+];
 
 export const SYSTEM_INSTRUCTION = `
 You are 'TNPSC_Frnd AI', a dedicated tutor for the Tamil Nadu Public Service Commission (TNPSC) exams.

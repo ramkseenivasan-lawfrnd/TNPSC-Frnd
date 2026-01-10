@@ -9,7 +9,9 @@ import {
   Bookmark,
   X,
   GraduationCap,
-  BookOpenText
+  BookOpenText,
+  ShieldCheck,
+  CalendarDays
 } from 'lucide-react';
 import { AppView } from '../types.ts';
 import { UI_STRINGS } from '../constants.ts';
@@ -26,6 +28,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, isOpen, toggle,
   const s = UI_STRINGS[language];
   const navItems = [
     { id: 'dashboard', icon: LayoutDashboard, label: s.dashboard },
+    { id: 'study-plan', icon: CalendarDays, label: s.studyPlan },
     { id: 'exams', icon: GraduationCap, label: s.exams },
     { id: 'syllabus', icon: BookOpenText, label: s.syllabus },
     { id: 'current-affairs', icon: Newspaper, label: s.currentAffairs },
@@ -87,7 +90,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, isOpen, toggle,
           })}
         </nav>
 
-        <div className="p-4 border-t border-white/10 shrink-0">
+        <div className="p-4 border-t border-white/10 shrink-0 space-y-3">
           <div className="bg-white/5 rounded-2xl p-4 border border-white/5">
             <p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-2">Sync Status</p>
             <div className="flex items-center gap-2.5">
@@ -98,6 +101,17 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, isOpen, toggle,
               <span className="text-sm font-semibold tracking-wide">Live Updates</span>
             </div>
           </div>
+
+          <button 
+            onClick={() => setView('admin-login')}
+            className={`w-full flex items-center gap-2 px-4 py-3 rounded-xl transition-all text-[11px] font-black uppercase tracking-widest ${
+              currentView === 'admin-login' || currentView === 'admin-dashboard' 
+                ? 'bg-white/20 text-white' 
+                : 'text-white/40 hover:text-white hover:bg-white/10'
+            }`}
+          >
+            <ShieldCheck size={14} /> Officer Login
+          </button>
         </div>
       </aside>
     </>

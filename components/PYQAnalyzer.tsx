@@ -40,6 +40,12 @@ const PYQAnalyzer: React.FC<PYQAnalyzerProps> = ({ language }) => {
 
   const MAX_FILE_SIZE = 20 * 1024 * 1024;
 
+  const updateWordCount = (text: string) => {
+    const wordCount = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+    const current = parseInt(localStorage.getItem('tnpsc_words_pyq') || '0', 10);
+    localStorage.setItem('tnpsc_words_pyq', (current + wordCount).toString());
+  };
+
   const handleFile = (selectedFile: File) => {
     if (selectedFile.size > MAX_FILE_SIZE) {
       alert(language === 'TN' ? "கோப்பு 20MB-க்கும் அதிகமாக உள்ளது." : "File size exceeds 20MB limit.");
@@ -91,6 +97,9 @@ const PYQAnalyzer: React.FC<PYQAnalyzerProps> = ({ language }) => {
     setIsSaved(false);
     setUploadProgress(10);
 
+    // Track input words
+    updateWordCount(finalInput);
+
     try {
       const ai = getGeminiClient();
       let prompt = "";
@@ -116,8 +125,13 @@ const PYQAnalyzer: React.FC<PYQAnalyzerProps> = ({ language }) => {
       });
 
       setUploadProgress(100);
-      const cleanedResponse = cleanMarkdown(response.text || "No analysis generated.");
+      const rawText = response.text || "";
+      const cleanedResponse = cleanMarkdown(rawText);
       setReport(cleanedResponse);
+
+      // Track AI output words
+      updateWordCount(rawText);
+
     } catch (e) {
       console.error(e);
       alert("Analysis failed.");

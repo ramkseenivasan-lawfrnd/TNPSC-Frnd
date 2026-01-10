@@ -1,5 +1,5 @@
 
-export type AppView = 'dashboard' | 'current-affairs' | 'chat' | 'pyq' | 'predictor' | 'saved-answers' | 'exams' | 'syllabus';
+export type AppView = 'dashboard' | 'current-affairs' | 'chat' | 'pyq' | 'predictor' | 'saved-answers' | 'exams' | 'syllabus' | 'study-plan' | 'admin-login' | 'admin-dashboard';
 
 export interface GroundingChunk {
   web?: {
@@ -33,4 +33,22 @@ export interface SavedItem {
   title: string;
   content: string;
   timestamp: number;
+}
+
+export interface AdminNotification {
+  id: string;
+  title: string;
+  description: string;
+  applyLink: string;
+  date: string;
+  isActive: boolean;
+}
+
+export interface StudyTask {
+  id: string;
+  exam: string;
+  unit: string;
+  topic: string;
+  isCompleted: boolean;
+  createdAt: number;
 }

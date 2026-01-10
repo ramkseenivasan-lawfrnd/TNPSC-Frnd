@@ -48,14 +48,20 @@ export const generateExamContent = async (prompt: string, searchGrounding = true
 
 export const streamExamChat = async (history: { role: string; parts: { text: string }[] }[]) => {
   const ai = getGeminiClient();
+  
+  // The history needs to be passed to ensure the model has context.
+  // We exclude the very last message from history because it will be sent via sendMessageStream.
+  const chatHistory = history.slice(0, -1);
+  const lastMessage = history[history.length - 1].parts[0].text;
+
   const chat = ai.chats.create({
     model: 'gemini-3-flash-preview',
+    history: chatHistory,
     config: {
       systemInstruction: SYSTEM_INSTRUCTION,
       tools: [{ googleSearch: {} }],
     },
   });
 
-  const lastMessage = history[history.length - 1].parts[0].text;
   return await chat.sendMessageStream({ message: lastMessage });
 };

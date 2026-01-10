@@ -17,6 +17,12 @@ const CurrentAffairs: React.FC<CurrentAffairsProps> = ({ language }) => {
   const [sources, setSources] = useState<GroundingChunk[]>([]);
   const [isSaved, setIsSaved] = useState(false);
 
+  const updateWordCount = (text: string) => {
+    const wordCount = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+    const current = parseInt(localStorage.getItem('tnpsc_words_ca') || '0', 10);
+    localStorage.setItem('tnpsc_words_ca', (current + wordCount).toString());
+  };
+
   const trendingTopics = language === 'TN' 
     ? [
         "கலைஞர் மகளிர் உரிமைத் தொகை திட்டம்",
@@ -44,6 +50,9 @@ const CurrentAffairs: React.FC<CurrentAffairsProps> = ({ language }) => {
     setAnalysis(null);
     setSources([]);
 
+    // Track input words
+    updateWordCount(finalInput);
+
     try {
       const prompt = `Analyze the following news or topic for TNPSC preparation: "${finalInput}". 
       Respond in the same language as the input.
@@ -53,6 +62,10 @@ const CurrentAffairs: React.FC<CurrentAffairsProps> = ({ language }) => {
       const result = await generateExamContent(prompt);
       setAnalysis(result.text);
       setSources(result.grounding as GroundingChunk[]);
+
+      // Track AI output words
+      updateWordCount(result.text);
+
     } catch (error) {
       console.error(error);
       setAnalysis(language === 'TN' ? "பகுப்பாய்வு செய்வதில் பிழை. மீண்டும் முயற்சிக்கவும்." : "Error fetching analysis. Please try again.");
