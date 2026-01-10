@@ -110,7 +110,9 @@ const ChatPreceptor: React.FC<ChatPreceptorProps> = ({ language }) => {
       let fullText = '';
       
       // Placeholder for the incoming bot response
-      setMessages(prev => [...prev, { role: 'model', text: '' }]);
+      // Fix: Use a typed object to ensure role is 'model' and matches Message interface
+      const placeholderMsg: Message = { role: 'model', text: '' };
+      setMessages(prev => [...prev, placeholderMsg]);
 
       for await (const chunk of streamResponse) {
         const text = chunk.text || '';
@@ -119,7 +121,10 @@ const ChatPreceptor: React.FC<ChatPreceptorProps> = ({ language }) => {
         setMessages(prev => {
           const updated = [...prev];
           if (updated.length > 0) {
-            updated[updated.length - 1].text = cleanedText;
+            updated[updated.length - 1] = {
+              ...updated[updated.length - 1],
+              text: cleanedText
+            };
           }
           return updated;
         });
@@ -133,11 +138,14 @@ const ChatPreceptor: React.FC<ChatPreceptorProps> = ({ language }) => {
 
     } catch (error) {
       console.error('Chat error:', error);
-      const errorMsg = language === 'TN' 
+      const errorMsgText = language === 'TN' 
         ? "மன்னிக்கவும், தகவல் சேகரிப்பதில் பிழை ஏற்பட்டது. மீண்டும் முயற்சி செய்யவும்."
         : "I encountered an error. This might be due to API limits or network issues. Please try again.";
+      
+      // Fix: Use typed object for the error message
+      const errorMsg: Message = { role: 'model', text: errorMsgText };
       setMessages(prev => {
-        const updated = [...prev, { role: 'model', text: errorMsg }];
+        const updated = [...prev, errorMsg];
         syncStorageAndStats(updated);
         return updated;
       });

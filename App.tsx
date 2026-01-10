@@ -15,6 +15,7 @@ import AdminDashboard from './components/AdminDashboard.tsx';
 import Sidebar from './components/Sidebar.tsx';
 import Header from './components/Header.tsx';
 import OfflineOverlay from './components/OfflineOverlay.tsx';
+import InstallPrompt from './components/InstallPrompt.tsx';
 
 const App: React.FC = () => {
   const [view, setView] = useState<AppView>('dashboard');
@@ -91,6 +92,7 @@ const App: React.FC = () => {
       case 'saved-answers': return <SavedAnswers language={language} />;
       case 'exams': return <ExamStructure language={language} />;
       case 'syllabus': return <ExamSyllabus language={language} />;
+      // Removed the invalid 'init-study-plan' case as it does not exist in the AppView union type.
       case 'study-plan': return <StudyPlan language={language} />;
       case 'admin-login': return <AdminLogin onLoginSuccess={handleOfficerLogin} setView={handleSetView} />;
       case 'admin-dashboard': return <AdminDashboard onLogout={handleOfficerLogout} />;
@@ -122,6 +124,8 @@ const App: React.FC = () => {
           </div>
         </main>
       </div>
+
+      <InstallPrompt language={language} />
     </div>
   );
 };

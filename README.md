@@ -1,76 +1,69 @@
-# 🎓 TNPSC_Frnd: AI Exam Preceptor
+# 🎓 TNPSC Frnd: Your Ultimate AI Exam Preceptor
 
-**TNPSC_Frnd** is a high-performance, AI-powered preparation assistant specifically designed for aspirants of the **Tamil Nadu Public Service Commission (TNPSC)**. By leveraging the **Gemini 3 Flash** model, it provides real-time tutoring, current affairs analysis with search grounding, and deep-dive analysis of Previous Year Questions (PYQs).
+**TNPSC Frnd** is a sophisticated, AI-first preparation platform engineered for aspirants of the **Tamil Nadu Public Service Commission (TNPSC)**. Using state-of-the-art **Gemini 3** models, it transforms traditional study methods into a data-driven, interactive, and high-probability success roadmap.
 
 ---
 
-## 🚀 Key Features
+## 🚀 Key Modules & Features
+
+### 📊 Intelligent Dashboard
+- **Usage Analytics**: Real-time tracking of AI consumption (Word counts and Token estimates).
+- **Cost Estimation**: Transparency in AI usage costs converted to INR.
+- **Dynamic Notifications**: Official exam updates pushed directly via the Officer Portal.
+- **Study Progress**: Visual progress tracking linked to your personalized study plan.
 
 ### 🧠 AI Preceptor (Personal Tutor)
-- **Syllabus-Aware**: Instant answers linked directly to TNPSC Units (including Unit 8: TN History/Culture and Unit 9: Development Administration).
-- **Streaming UI**: Human-like responses that appear in real-time.
-- **Bilingual Support**: Toggle seamlessly between **Tamil (தமிழ்)** and **English**.
+- **Contextual Learning**: Instant tutoring on the entire TNPSC syllabus (Units 1-10).
+- **History Management**: Persistent chat history with **Individual Message Deletion** and **Clear Chat** functionality.
+- **Bilingual Interface**: Seamlessly switch between **Tamil (தமிழ்)** and **English**.
+
+### 📈 Exam Predictor (100-Item Cycle)
+- **Historical Analysis**: Scans years of PYQs against the current year's government policies.
+- **Future Forecasting**: Generates exactly **100 high-probability questions** for the upcoming cycle.
+- **Professional PDF Export**: Export prediction reports with a single click for offline revision.
+
+### 🗓️ Personal Study Plan
+- **Interactive Roadmap**: Add, edit, and track specific exam units and topics.
+- **Progressive UI**: Visual completion bars to keep you motivated and on schedule.
+- **Local Sync**: Saves progress automatically to your device.
+
+### 📄 PYQ Analyzer & Syllabus Browser
+- **Multimodal Analysis**: Upload PDFs or images of old question papers for instant AI solving.
+- **Topic Search**: Searchable syllabus browser to find exactly what you need to study in seconds.
+- **Syllabus Mapping**: Links every analyzed question back to its official TNPSC unit.
 
 ### 📰 Smart Current Affairs
-- **Google Search Grounding**: Fetches the latest government policies and news.
-- **TN-Specific Impact**: Automatically identifies how national news affects the state of Tamil Nadu.
-- **Verified Sources**: Includes direct links to official news and government portals.
-
-### 📄 PYQ Analyzer
-- **Multimodal Uploads**: Drag and drop PDF question papers or snap photos of exam pages.
-- **Automated Solving**: AI identifies questions within documents and provides detailed explanations.
-- **Syllabus Mapping**: Links every question to its relevant portion in the official syllabus.
-
-### 📈 Exam Predictor
-- **Trend Analysis**: Uses historical data from the last 5 years to predict high-probability topics for upcoming Group I, II, and IV exams.
-- **Probability Scores**: Visualizes topic importance using intuitive progress bars.
+- **Google Search Grounding**: Fetches up-to-the-minute news from verified government sources.
+- **TN-Impact Filter**: Automatically explains how global/national news impacts Tamil Nadu specifically.
 
 ### 📁 Knowledge Bank
-- **Persistent Storage**: Save complex explanations or news analysis to your local "Knowledge Bank" for offline revision.
+- **Persistent Storage**: Bookmark any AI analysis to your private vault for offline reading.
 
 ---
 
-## 🛠️ Technical Stack
-
-- **Frontend**: React 19 (ES6 Modules)
-- **Styling**: Tailwind CSS
-- **Icons**: Lucide React
-- **AI Engine**: `@google/genai` (Gemini 3 Flash & 2.5 Flash)
-- **Grounding**: Google Search & Maps API integration
+## 👮 Officer Portal (Admin Access)
+The platform includes a secured **Officer Login** (`sslegalaidcenter@gmail.com`) for administrators to:
+- Publish official exam notifications.
+- Manage "Live Update" streams.
+- Control the visibility of high-priority exam alerts.
 
 ---
 
-## ⚙️ Environment Configuration
+## 🛠️ Technical Architecture
 
-To run this application, you need a Google AI Studio API Key.
-
-### Local Setup
-1. Define your key in a `.env` file:
-   ```env
-   VITE_API_KEY=your_gemini_api_key_here
-   ```
-
-### Vercel Deployment
-For security and compatibility, add the following Environment Variables in your Vercel Project Settings:
-- `API_KEY`: Your Gemini Key
-- `VITE_API_KEY`: Your Gemini Key (Duplicate for build-time compatibility)
+- **React 19**: Modern component-based architecture with ES6 modules.
+- **Gemini 3 Pro/Flash**: High-reasoning AI models with search and thinking capabilities.
+- **Tailwind CSS 3.4**: Responsive, accessible, and high-performance design.
+- **Lucide React**: Clean, semantic iconography.
+- **Storage Events**: Real-time data synchronization between the dashboard and individual tools.
 
 ---
 
-## 📜 System Instructions & Safety
+## ⚙️ Configuration
 
-The AI is governed by strict system instructions to ensure academic integrity:
-- **Clean Output**: All Markdown symbols (`###`, `**`) are stripped for a professional, plain-text reading experience.
-- **Accuracy First**: The model is instructed to prioritize official TNPSC sources and government press releases.
-- **Encouraging Tone**: Designed to act as a supportive mentor for long-term preparation.
-
----
-
-## 👨‍🏫 Usage Tips
-
-1. **Unit 8 & 9**: When asking about Tamil culture or administration, use the **Tamil** language setting for more nuanced and culturally accurate responses.
-2. **Clear History**: Use the 'Trash' icon in the Chat Preceptor to start a fresh topic for better context management.
-3. **Save for Later**: Use the 'Bookmark' icon on any analysis to keep it in your permanent study list.
+Requires a valid Google AI Studio API Key.
+- Ensure `process.env.API_KEY` is set in your environment.
+- The app utilizes `gemini-3-flash-preview` for speed and `gemini-3-pro-preview` for complex prediction tasks.
 
 ---
-*Built with ❤️ for TNPSC Aspirants.*
+*Built with ❤️ for the next generation of Tamil Nadu Civil Servants.*

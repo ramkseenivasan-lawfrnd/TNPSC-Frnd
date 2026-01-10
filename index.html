@@ -4,7 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TNPSC_Frnd - AI Exam Preceptor</title>
+    <title>TNPSC Frnd - AI Exam Preceptor</title>
+    
+    <!-- SEO & Social Media Metadata -->
+    <meta name="description" content="AI-powered preparation guide for TNPSC exams. Features PYQ analysis, 2025 question predictions, and a personalized AI tutor.">
+    <meta property="og:title" content="TNPSC Frnd - Your AI Exam Preceptor">
+    <meta property="og:description" content="Master TNPSC Units 1-10 with AI. Get high-probability question predictions and real-time current affairs.">
+    <meta property="og:image" content="https://cdn-icons-png.flaticon.com/512/2232/2232688.png">
+    <meta property="og:url" content="https://tnpscfrnd.vercel.app/">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <!-- PWA & Meta -->
+    <meta name="theme-color" content="#003366">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2232/2232688.png">
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,6 +31,7 @@
             font-family: 'Inter', sans-serif;
             background-color: #f8fafc;
             margin: 0;
+            overscroll-behavior-y: contain;
         }
         .font-scholarly {
             font-family: 'Merriweather', serif;
@@ -38,6 +56,15 @@
     </style>
     <script>
         window.process = window.process || { env: {} };
+        
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+              .then(reg => console.log('SW registered'))
+              .catch(err => console.log('SW registration failed', err));
+          });
+        }
     </script>
 <script type="importmap">
 {

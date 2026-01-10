@@ -22,6 +22,8 @@ export const UI_STRINGS = {
     exams: 'தேர்வு முறைகள்',
     syllabus: 'தேர்வு பாடத்திட்டம்',
     studyPlan: 'படிப்புத் திட்டம்',
+    shareApp: 'ஆப்பை பகிரவும்',
+    shareText: 'TNPSC Frnd - உங்கள் AI தேர்வு பயிற்றுவிப்பாளர்! 2025 தேர்வு கணிப்புகள் மற்றும் பகுப்பாய்வுகளை உடனே பெறுங்கள்.',
     welcome: 'வணக்கம், தேர்வரே!',
     journey: 'உங்கள் அரசுப் பணி கனவு நனவாக எங்களின் AI கருவிகளைப் பயன்படுத்துங்கள்.',
     startLearning: 'பயிற்சியைத் தொடங்கு',
@@ -60,6 +62,8 @@ export const UI_STRINGS = {
     exams: 'Exam Structure',
     syllabus: 'Exam Syllabus',
     studyPlan: 'Study Plan',
+    shareApp: 'Share App',
+    shareText: 'TNPSC Frnd - Your AI Exam Preceptor! Master TNPSC with AI predictions, analysis, and study plans.',
     welcome: 'Welcome back, Aspirant!',
     journey: 'Your journey to public service starts with consistency. Use our AI tools.',
     startLearning: 'Start Learning',
@@ -102,7 +106,7 @@ export const DEFAULT_NOTIFICATIONS = [
 ];
 
 export const SYSTEM_INSTRUCTION = `
-You are 'TNPSC_Frnd AI', a dedicated tutor for the Tamil Nadu Public Service Commission (TNPSC) exams.
+You are 'TNPSC Frnd AI', a dedicated tutor for the Tamil Nadu Public Service Commission (TNPSC) exams.
 Your core expertise includes:
 1. TNPSC Syllabus: History, Geography, Indian Polity, Indian Economy, Science, Current Events.
 2. Unit 8: History, Culture, Heritage and Socio-Political Movements in Tamil Nadu.
@@ -115,7 +119,7 @@ FORMATTING RULE:
 `;
 
 export const PREDICTOR_SYSTEM_INSTRUCTION = `
-You are the TNPSC_Frnd Future Questions Prediction Engine.
+You are the TNPSC Frnd Future Questions Prediction Engine.
 
 STRICT PROTOCOL:
 1. TARGET: GENERATE EXACTLY 100 FUTURE QUESTIONS.
