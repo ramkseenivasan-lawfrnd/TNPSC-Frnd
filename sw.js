@@ -1,8 +1,9 @@
-const CACHE_NAME = 'tnpsc-frnd-cache-v6';
+const CACHE_NAME = 'tnpsc-frnd-cache-v7';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/manifest.json',
+  '/sw.js',
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png'
 ];

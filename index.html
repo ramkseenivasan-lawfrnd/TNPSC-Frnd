@@ -67,17 +67,14 @@
     <script>
         window.process = window.process || { env: {} };
         
-        // Robust Service Worker registration to handle environment quirks
         if ('serviceWorker' in navigator) {
           window.addEventListener('load', () => {
-            // Using absolute path for SW
-            const swPath = '/sw.js';
-            navigator.serviceWorker.register(swPath)
+            navigator.serviceWorker.register('/sw.js')
               .then(reg => {
                 console.log('SW registered successfully', reg.scope);
               })
               .catch(err => {
-                console.warn('SW registration skipped or failed:', err.message);
+                console.warn('SW registration failed:', err.message);
               });
           });
         }
