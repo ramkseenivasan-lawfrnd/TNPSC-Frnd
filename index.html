@@ -15,10 +15,10 @@
     <meta name="twitter:card" content="summary_large_image">
     
     <!-- Favicon Configuration -->
-    <link rel="apple-touch-icon" sizes="192x192" href="icons/icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon/favicon-16x16.png">
-    <link rel="shortcut icon" href="favicon/favicon.ico">
+    <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="shortcut icon" href="/favicon/favicon.ico">
     <meta name="msapplication-TileColor" content="#003366">
     <meta name="theme-color" content="#003366">
 
@@ -27,7 +27,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="TNPSC Frnd">
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="/manifest.json">
     
     <!-- External Ad Script -->
     <script async="async" data-cfasync="false" src="https://pl28449124.effectivegatecpm.com/e11c6c3115d78d5625791ad00fd6ebc1/invoke.js"></script>
@@ -70,19 +70,11 @@
         // Robust Service Worker registration to handle environment quirks
         if ('serviceWorker' in navigator) {
           window.addEventListener('load', () => {
-            // Using relative path for SW to ensure it registers on the correct origin
-            const swPath = 'sw.js';
+            // Using absolute path for SW
+            const swPath = '/sw.js';
             navigator.serviceWorker.register(swPath)
               .then(reg => {
                 console.log('SW registered successfully', reg.scope);
-                reg.onupdatefound = () => {
-                  const installingWorker = reg.installing;
-                  installingWorker.onstatechange = () => {
-                    if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                      console.log('New content available; please refresh.');
-                    }
-                  };
-                };
               })
               .catch(err => {
                 console.warn('SW registration skipped or failed:', err.message);
