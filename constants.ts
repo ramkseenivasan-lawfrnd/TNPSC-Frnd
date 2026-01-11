@@ -95,13 +95,13 @@ export const UI_STRINGS = {
 };
 
 export const DEFAULT_NOTIFICATIONS = [
-  {
-    id: '1',
-    title: 'Group II Prelims 2025',
-    description: 'Official Notification for Combined Civil Services Examination - II.',
-    applyLink: 'https://www.tnpsc.gov.in',
-    date: 'July 20, 2025',
-    isActive: true
+    {
+    "id": "1",
+    "title": "Annual Planner - Programme of Examinations - 2026",
+    "description": "Note :\nThis planner is tentative so as to enable the candidates to prepare themselves for the examination\nThere may be addition or deletion to examinations mentioned in the planner.\nThe vacancies will be announced in the notification.\nThe syllabus and the scheme of examination are available on the Commission’s website www.tnpsc.gov.in, which are also subject to modification till the date of publication of notification.\nPlease visit the Commission's website for updates regarding notification.",
+    "applyLink": "https://tnpsc.gov.in/English/annual_planner.html",
+    "date": "December 3, 2025",
+    "isActive": true
   }
 ];
 

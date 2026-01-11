@@ -1,6 +1,23 @@
 
 import React, { useState, useEffect } from 'react';
-import { Bell, Plus, Trash2, ExternalLink, ShieldCheck, LogOut, Info, Edit3, Save, X, ToggleLeft, ToggleRight, Calendar } from 'lucide-react';
+import { 
+  Bell, 
+  Plus, 
+  Trash2, 
+  ExternalLink, 
+  ShieldCheck, 
+  LogOut, 
+  Info, 
+  Edit3, 
+  Save, 
+  X, 
+  ToggleLeft, 
+  ToggleRight, 
+  Calendar,
+  Download,
+  FileJson,
+  Check
+} from 'lucide-react';
 import { AdminNotification } from '../types.ts';
 import { DEFAULT_NOTIFICATIONS } from '../constants.ts';
 
@@ -12,6 +29,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
   const [notifications, setNotifications] = useState<AdminNotification[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [downloadSuccess, setDownloadSuccess] = useState(false);
   
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -87,7 +105,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
     setApplyLink(n.applyLink);
     setIsActive(n.isActive);
     
-    // Try to parse the existing date string back into YYYY-MM-DD for the input
     try {
       const parsedDate = new Date(n.date);
       if (!isNaN(parsedDate.getTime())) {
@@ -116,6 +133,22 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
     }
   };
 
+  const downloadConfigJSON = () => {
+    const dataStr = JSON.stringify(notifications, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'notifications_config.json';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    setDownloadSuccess(true);
+    setTimeout(() => setDownloadSuccess(false), 3000);
+  };
+
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-20 animate-in slide-in-from-bottom-4 duration-500">
       <div className="flex items-center justify-between bg-white p-6 md:p-8 rounded-[2rem] border border-slate-200 shadow-xl">
@@ -126,13 +159,39 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ onLogout }) => {
             <p className="text-slate-400 text-xs font-bold uppercase tracking-widest">Notification Management</p>
           </div>
         </div>
-        <button 
-          onClick={onLogout}
-          className="p-3 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
-          title="Logout"
-        >
-          <LogOut size={24} />
-        </button>
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={downloadConfigJSON}
+            className={`p-3 rounded-xl transition-all flex items-center gap-2 ${
+              downloadSuccess ? 'bg-green-500 text-white shadow-lg' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
+            }`}
+            title="Download JSON for deployment"
+          >
+            {downloadSuccess ? <Check size={20} /> : <FileJson size={20} />}
+            <span className="hidden md:inline text-[10px] font-black uppercase tracking-widest">
+              {downloadSuccess ? 'Downloaded' : 'Export JSON'}
+            </span>
+          </button>
+          <button 
+            onClick={onLogout}
+            className="p-3 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+            title="Logout"
+          >
+            <LogOut size={24} />
+          </button>
+        </div>
+      </div>
+
+      <div className="bg-indigo-50 border border-indigo-100 p-6 rounded-[2rem] flex items-start gap-4 shadow-sm">
+        <div className="p-2 bg-indigo-600 text-white rounded-lg shrink-0">
+          <Download size={20} />
+        </div>
+        <div>
+          <h4 className="text-sm font-black text-indigo-900 uppercase tracking-tight mb-1">Deployment Note</h4>
+          <p className="text-xs text-indigo-700 leading-relaxed font-medium">
+            After updating notifications, click <strong>"Export JSON"</strong> to download the config. Replace the content in <code>DEFAULT_NOTIFICATIONS</code> within <code>constants.ts</code> for the public deployment.
+          </p>
+        </div>
       </div>
 
       {!showForm ? (
