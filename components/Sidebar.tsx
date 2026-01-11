@@ -84,10 +84,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, isOpen, toggle,
       `}>
         <div className="p-6 flex items-center justify-between border-b border-white/10 shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-[#FFD700] rounded-lg flex items-center justify-center text-[#003366] font-extrabold shadow-inner">
-              T
-            </div>
-            <h1 className="text-xl font-bold tracking-tight">TNPSC_Frnd</h1>
+            <h1 className="text-xl font-bold tracking-tight">TNPSC Frnd</h1>
           </div>
           <button onClick={toggle} className="md:hidden p-2 hover:bg-white/10 rounded-full transition-colors">
             <X size={24} />
