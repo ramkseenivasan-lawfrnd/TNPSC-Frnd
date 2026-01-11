@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   LayoutDashboard, 
   Newspaper, 
@@ -11,7 +10,9 @@ import {
   GraduationCap,
   BookOpenText,
   ShieldCheck,
-  CalendarDays
+  CalendarDays,
+  Share2,
+  Check
 } from 'lucide-react';
 import { AppView } from '../types.ts';
 import { UI_STRINGS } from '../constants.ts';
@@ -26,6 +27,8 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, isOpen, toggle, language }) => {
   const s = UI_STRINGS[language];
+  const [isCopied, setIsCopied] = useState(false);
+
   const navItems = [
     { id: 'dashboard', icon: LayoutDashboard, label: s.dashboard },
     { id: 'study-plan', icon: CalendarDays, label: s.studyPlan },
@@ -37,6 +40,31 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, isOpen, toggle,
     { id: 'predictor', icon: TrendingUp, label: s.predictor },
     { id: 'saved-answers', icon: Bookmark, label: s.savedAnswers },
   ];
+
+  const handleShare = async () => {
+    const shareData = {
+      title: 'TNPSC Frnd',
+      text: s.shareText,
+      url: 'https://tnpscfrnd.vercel.app/',
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.error('Error sharing:', err);
+      }
+    } else {
+      // Fallback: Copy to clipboard
+      try {
+        await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+        setIsCopied(true);
+        setTimeout(() => setIsCopied(false), 2000);
+      } catch (err) {
+        console.error('Failed to copy link', err);
+      }
+    }
+  };
 
   return (
     <>
@@ -88,6 +116,24 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, isOpen, toggle,
               </button>
             );
           })}
+
+          {/* Integrated Share Button */}
+          <button
+            onClick={handleShare}
+            className={`
+              w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl transition-all active:scale-[0.98] mt-4
+              ${isCopied 
+                ? 'bg-green-600/20 text-green-400 border border-green-500/30' 
+                : 'bg-[#FFD700]/10 text-[#FFD700] hover:bg-[#FFD700] hover:text-[#003366] font-bold'}
+            `}
+          >
+            {isCopied ? <Check size={20} /> : <Share2 size={20} />}
+            <span className={`tracking-wide transition-all ${
+              language === 'TN' ? 'text-[13px]' : 'text-[15px]'
+            }`}>
+              {isCopied ? (language === 'TN' ? 'நகலெடுக்கப்பட்டது' : 'Link Copied') : s.shareApp}
+            </span>
+          </button>
         </nav>
 
         <div className="p-4 border-t border-white/10 shrink-0 space-y-3">
