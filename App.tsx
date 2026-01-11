@@ -11,10 +11,12 @@ import ExamSyllabus from './components/ExamSyllabus.tsx';
 import StudyPlan from './components/StudyPlan.tsx';
 import AdminLogin from './components/AdminLogin.tsx';
 import AdminDashboard from './components/AdminDashboard.tsx';
+import ContactUs from './components/ContactUs.tsx';
 import Sidebar from './components/Sidebar.tsx';
 import Header from './components/Header.tsx';
 import OfflineOverlay from './components/OfflineOverlay.tsx';
 import InstallPrompt from './components/InstallPrompt.tsx';
+import Onboarding from './components/Onboarding.tsx';
 
 const App: React.FC = () => {
   const [view, setView] = useState<AppView>('dashboard');
@@ -22,21 +24,26 @@ const App: React.FC = () => {
   const [language, setLanguage] = useState<'EN' | 'TN'>('TN');
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [isOfficerLoggedIn, setIsOfficerLoggedIn] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
+    // Check first-time setup
+    const isSetupComplete = localStorage.getItem('tnpsc_setup_complete');
+    if (!isSetupComplete) {
+      setShowOnboarding(true);
+    }
+
     const handleOnline = () => setIsOnline(true);
     const handleOffline = () => setIsOnline(false);
 
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    // Global view switcher for non-prop-passing components
     const handleSwitchView = (e: any) => {
       setView(e.detail);
     };
     window.addEventListener('switch-view', handleSwitchView);
 
-    // Persistence of login for session
     const loginStatus = sessionStorage.getItem('tnpsc_officer_logged_in');
     if (loginStatus === 'true') {
       setIsOfficerLoggedIn(true);
@@ -48,6 +55,12 @@ const App: React.FC = () => {
       window.removeEventListener('switch-view', handleSwitchView);
     };
   }, []);
+
+  const handleOnboardingComplete = (userName: string) => {
+    localStorage.setItem('tnpsc_user_name', userName);
+    localStorage.setItem('tnpsc_setup_complete', 'true');
+    setShowOnboarding(false);
+  };
 
   const handleOfficerLogin = () => {
     setIsOfficerLoggedIn(true);
@@ -62,7 +75,6 @@ const App: React.FC = () => {
   };
 
   const handleSetView = (newView: AppView) => {
-    // Redirect logic for officer dashboard
     if (newView === 'admin-dashboard' && !isOfficerLoggedIn) {
       setView('admin-login');
       return;
@@ -94,12 +106,20 @@ const App: React.FC = () => {
       case 'study-plan': return <StudyPlan language={language} />;
       case 'admin-login': return <AdminLogin onLoginSuccess={handleOfficerLogin} setView={handleSetView} />;
       case 'admin-dashboard': return <AdminDashboard onLogout={handleOfficerLogout} />;
+      case 'contact': return <ContactUs language={language} />;
       default: return <Dashboard setView={setView} language={language} setLanguage={setLanguage} />;
     }
   };
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden text-slate-900 relative">
+      {showOnboarding && (
+        <Onboarding 
+          language={language} 
+          onComplete={handleOnboardingComplete} 
+        />
+      )}
+      
       <Sidebar 
         currentView={view} 
         setView={handleSetView} 
@@ -122,7 +142,6 @@ const App: React.FC = () => {
           </div>
         </main>
 
-        {/* Banner Ad Section - Fixed 4:1 Ratio with "Ads" Label */}
         <div className="px-4 py-2 sm:px-6 lg:px-8 bg-white border-t border-slate-100 shrink-0">
           <div className="max-w-3xl mx-auto">
             <div className="flex items-center justify-between mb-1 px-1">

@@ -12,7 +12,8 @@ import {
   ShieldCheck,
   CalendarDays,
   Share2,
-  Check
+  Check,
+  Info
 } from 'lucide-react';
 import { AppView } from './types.ts';
 import { UI_STRINGS } from './constants.ts';
@@ -39,6 +40,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, isOpen, toggle,
     { id: 'pyq', icon: FileQuestion, label: s.pyqAnalyzer },
     { id: 'predictor', icon: TrendingUp, label: s.predictor },
     { id: 'saved-answers', icon: Bookmark, label: s.savedAnswers },
+    { id: 'contact', icon: Info, label: language === 'TN' ? 'தொடர்புக்கு' : 'Contact & Legal' },
   ];
 
   const handleShare = async () => {

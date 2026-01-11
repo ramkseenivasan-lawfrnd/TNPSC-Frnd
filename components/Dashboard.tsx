@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { AppView, AdminNotification, StudyTask } from '../types.ts';
 import { ArrowRight, BookOpen, GraduationCap, Target, Clock, Languages, ExternalLink, Bell, X, Info, Sparkles, Cpu, Calculator, Activity, CalendarCheck } from 'lucide-react';
@@ -13,8 +12,7 @@ interface DashboardProps {
 const Dashboard: React.FC<DashboardProps> = ({ setView, language, setLanguage }) => {
   const s = UI_STRINGS[language];
   const [notifications, setNotifications] = useState<AdminNotification[]>([]);
-  const [showPopup, setShowPopup] = useState(false);
-  const [latestNotif, setLatestNotif] = useState<AdminNotification | null>(null);
+  const [userName, setUserName] = useState('');
   const notifSectionRef = useRef<HTMLDivElement>(null);
 
   // Usage Stats State
@@ -25,13 +23,12 @@ const Dashboard: React.FC<DashboardProps> = ({ setView, language, setLanguage })
   const [totalTasks, setTotalTasks] = useState(0);
 
   const loadLocalStats = () => {
-    // Load word counts from localStorage
     const getWords = (key: string) => parseInt(localStorage.getItem(key) || '0', 10);
     setChatWords(getWords('tnpsc_words_chat'));
     setPyqWords(getWords('tnpsc_words_pyq'));
     setCaWords(getWords('tnpsc_words_ca'));
+    setUserName(localStorage.getItem('tnpsc_user_name') || '');
 
-    // Load Study Plan Progress
     const savedPlan = localStorage.getItem('tnpsc_study_plan');
     if (savedPlan) {
       const tasks: StudyTask[] = JSON.parse(savedPlan);
@@ -50,11 +47,8 @@ const Dashboard: React.FC<DashboardProps> = ({ setView, language, setLanguage })
 
   useEffect(() => {
     loadLocalStats();
-
-    // Listen for storage events (triggered when other tabs/components update localStorage)
     window.addEventListener('storage', loadLocalStats);
 
-    // Check for scroll trigger from header
     const checkScroll = () => {
       const trigger = localStorage.getItem('tnpsc_scroll_to_notifs');
       if (trigger === 'true' && notifSectionRef.current) {
@@ -74,24 +68,12 @@ const Dashboard: React.FC<DashboardProps> = ({ setView, language, setLanguage })
     }
     setNotifications(activeNotifs);
 
-    // Alert Logic for first-time session
-    if (activeNotifs.length > 0) {
-      const topNotif = activeNotifs[0];
-      const hasSeen = sessionStorage.getItem(`tnpsc_seen_alert_${topNotif.id}`);
-      if (!hasSeen) {
-        setLatestNotif(topNotif);
-        setShowPopup(true);
-        sessionStorage.setItem(`tnpsc_seen_alert_${topNotif.id}`, 'true');
-      }
-    }
-
     return () => {
       clearInterval(interval);
       window.removeEventListener('storage', loadLocalStats);
     };
   }, []);
 
-  // Calculate simulated Gemini API Cost
   const totalWords = chatWords + pyqWords + caWords;
   const estimatedTokens = totalWords * 1.33;
   const officialCostUSD = (estimatedTokens / 1000000) * 0.15; 
@@ -130,7 +112,7 @@ const Dashboard: React.FC<DashboardProps> = ({ setView, language, setLanguage })
             </div>
             <h1 className={`font-extrabold font-scholarly mb-3 leading-tight tracking-tight ${
               language === 'TN' ? 'text-xl md:text-3xl' : 'text-2xl md:text-4xl'
-            }`}>{s.welcome}</h1>
+            }`}>{s.welcome}{userName ? `, ${userName}!` : '!'}</h1>
             <p className="text-blue-100 mb-8 leading-relaxed opacity-90 max-w-md">
               {s.journey}
             </p>

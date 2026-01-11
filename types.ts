@@ -1,5 +1,4 @@
-
-export type AppView = 'dashboard' | 'current-affairs' | 'chat' | 'pyq' | 'predictor' | 'saved-answers' | 'exams' | 'syllabus' | 'study-plan' | 'admin-login' | 'admin-dashboard';
+export type AppView = 'dashboard' | 'current-affairs' | 'chat' | 'pyq' | 'predictor' | 'saved-answers' | 'exams' | 'syllabus' | 'study-plan' | 'admin-login' | 'admin-dashboard' | 'contact';
 
 export interface GroundingChunk {
   web?: {

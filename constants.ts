@@ -24,7 +24,7 @@ export const UI_STRINGS = {
     studyPlan: 'படிப்புத் திட்டம்',
     shareApp: 'ஆப்பை பகிரவும்',
     shareText: 'TNPSC Frnd - உங்கள் AI தேர்வு பயிற்றுவிப்பாளர்! 2025 தேர்வு கணிப்புகள் மற்றும் பகுப்பாய்வுகளை உடனே பெறுங்கள்.',
-    welcome: 'வணக்கம், தேர்வரே!',
+    welcome: 'வணக்கம்',
     journey: 'உங்கள் அரசுப் பணி கனவு நனவாக எங்களின் AI கருவிகளைப் பயன்படுத்துங்கள்.',
     startLearning: 'பயிற்சியைத் தொடங்கு',
     stats: {
@@ -50,6 +50,19 @@ export const UI_STRINGS = {
       desc: 'இந்த அம்சம் செயல்பட இணையம் தேவை. உங்கள் அறிவு வங்கியை நீங்கள் இன்னும் அணுகலாம்.',
       backToSaved: 'சேமிக்கப்பட்டவைக்குச் செல்லவும்',
       retry: 'மீண்டும் முயற்சி செய்'
+    },
+    onboarding: {
+      welcome: 'TNPSC Frnd-க்கு வரவேற்கிறோம்',
+      getStarted: 'தொடங்குவோம்',
+      next: 'அடுத்தது',
+      finish: 'முடிந்தது',
+      namePrompt: 'உங்கள் பெயர் என்ன?',
+      namePlaceholder: 'பெயர்...',
+      featureTitle: 'அம்சங்கள்',
+      aboutTitle: 'எங்களைப் பற்றி',
+      agreeConsent: 'நிபந்தனைகள் மற்றும் தனியுரிமைக் கொள்கையை நான் ஏற்றுக்கொள்கிறேன்.',
+      contactLink: 'தொடர்பு மற்றும் சட்டப்பூர்வ தகவல்கள்',
+      mandatoryConsent: 'தொடர நீங்கள் நிபந்தனைகளை ஏற்க வேண்டும்.'
     }
   },
   EN: {
@@ -64,7 +77,7 @@ export const UI_STRINGS = {
     studyPlan: 'Study Plan',
     shareApp: 'Share App',
     shareText: 'TNPSC Frnd - Your AI Exam Preceptor! Master TNPSC with AI predictions, analysis, and study plans.',
-    welcome: 'Welcome back, Aspirant!',
+    welcome: 'Welcome back',
     journey: 'Your journey to public service starts with consistency. Use our AI tools.',
     startLearning: 'Start Learning',
     stats: {
@@ -90,6 +103,19 @@ export const UI_STRINGS = {
       desc: 'This feature requires an internet connection to function. You can still access your Knowledge Bank.',
       backToSaved: 'Go to Knowledge Bank',
       retry: 'Retry Connection'
+    },
+    onboarding: {
+      welcome: 'Welcome to TNPSC Frnd',
+      getStarted: 'Get Started',
+      next: 'Next',
+      finish: 'Let\'s Go',
+      namePrompt: 'What should we call you?',
+      namePlaceholder: 'Enter your name...',
+      featureTitle: 'Key Features',
+      aboutTitle: 'About Us',
+      agreeConsent: 'I agree to the Terms and Privacy Policy.',
+      contactLink: 'View Contact & Legal Info',
+      mandatoryConsent: 'You must agree to continue.'
     }
   }
 };
