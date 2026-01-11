@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { AppView } from './types.ts';
 import Dashboard from './components/Dashboard.tsx';
@@ -17,6 +18,7 @@ import Header from './components/Header.tsx';
 import OfflineOverlay from './components/OfflineOverlay.tsx';
 import InstallPrompt from './components/InstallPrompt.tsx';
 import Onboarding from './components/Onboarding.tsx';
+import LandingPage from './components/LandingPage.tsx';
 
 const App: React.FC = () => {
   const [view, setView] = useState<AppView>('dashboard');
@@ -24,13 +26,15 @@ const App: React.FC = () => {
   const [language, setLanguage] = useState<'EN' | 'TN'>('TN');
   const [isOnline, setIsOnline] = useState(navigator.onLine);
   const [isOfficerLoggedIn, setIsOfficerLoggedIn] = useState(false);
+  const [showLanding, setShowLanding] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
 
   useEffect(() => {
     // Check first-time setup
     const isSetupComplete = localStorage.getItem('tnpsc_setup_complete');
     if (!isSetupComplete) {
-      setShowOnboarding(true);
+      setShowLanding(true);
     }
 
     const handleOnline = () => setIsOnline(true);
@@ -44,6 +48,12 @@ const App: React.FC = () => {
     };
     window.addEventListener('switch-view', handleSwitchView);
 
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
     const loginStatus = sessionStorage.getItem('tnpsc_officer_logged_in');
     if (loginStatus === 'true') {
       setIsOfficerLoggedIn(true);
@@ -53,8 +63,14 @@ const App: React.FC = () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
       window.removeEventListener('switch-view', handleSwitchView);
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     };
   }, []);
+
+  const handleStartOnboarding = () => {
+    setShowLanding(false);
+    setShowOnboarding(true);
+  };
 
   const handleOnboardingComplete = (userName: string) => {
     localStorage.setItem('tnpsc_user_name', userName);
@@ -81,6 +97,15 @@ const App: React.FC = () => {
     }
     setView(newView);
     setIsSidebarOpen(false);
+  };
+
+  const handleInstall = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+    }
   };
 
   const checkConnectivity = () => {
@@ -113,6 +138,10 @@ const App: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden text-slate-900 relative">
+      {showLanding && (
+        <LandingPage language={language} onStart={handleStartOnboarding} />
+      )}
+      
       {showOnboarding && (
         <Onboarding 
           language={language} 
@@ -126,6 +155,8 @@ const App: React.FC = () => {
         isOpen={isSidebarOpen} 
         toggle={() => setIsSidebarOpen(!isSidebarOpen)} 
         language={language}
+        onInstall={handleInstall}
+        canInstall={!!deferredPrompt}
       />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden h-full">
@@ -157,7 +188,7 @@ const App: React.FC = () => {
         </div>
       </div>
 
-      <InstallPrompt language={language} />
+      <InstallPrompt language={language} onInstall={handleInstall} canInstall={!!deferredPrompt} />
     </div>
   );
 };

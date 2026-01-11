@@ -1,3 +1,4 @@
+
 {
   "id": "tnpsc-frnd-ai-v1",
   "name": "TNPSC Frnd",
@@ -31,18 +32,11 @@
   ],
   "screenshots": [
     {
-      "src": "https://raw.githubusercontent.com/GoogleChrome/samples/gh-pages/pwa-screenshots/screenshot1.png",
-      "sizes": "1280x720",
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
       "type": "image/png",
       "form_factor": "wide",
       "label": "TNPSC Frnd Dashboard"
-    },
-    {
-      "src": "https://raw.githubusercontent.com/GoogleChrome/samples/gh-pages/pwa-screenshots/screenshot2.png",
-      "sizes": "720x1280",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "AI Preceptor Chat"
     }
   ],
   "start_url": "/",

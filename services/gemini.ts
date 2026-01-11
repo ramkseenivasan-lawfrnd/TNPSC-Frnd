@@ -17,10 +17,10 @@ export const cleanMarkdown = (text: string): string => {
     .trim();
 };
 
-// Fixed to strictly use process.env.API_KEY and named parameter initialization
+// Fixed to strictly use process.env.API_KEY directly as per guidelines
 export const getGeminiClient = () => {
-  const apiKey = process.env.API_KEY || "";
-  return new GoogleGenAI({ apiKey });
+  // CRITICAL: Must use a named parameter and direct access to process.env.API_KEY
+  return new GoogleGenAI({ apiKey: process.env.API_KEY });
 };
 
 export const generateExamContent = async (prompt: string, searchGrounding = true) => {
@@ -40,6 +40,7 @@ export const generateExamContent = async (prompt: string, searchGrounding = true
     config,
   });
 
+  // Correct: Accessing text as a property, not a method call
   return {
     text: cleanMarkdown(response.text || "No response generated."),
     grounding: response.candidates?.[0]?.groundingMetadata?.groundingChunks || []

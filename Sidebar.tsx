@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
   LayoutDashboard, 
@@ -13,7 +14,8 @@ import {
   CalendarDays,
   Share2,
   Check,
-  Info
+  Info,
+  Download
 } from 'lucide-react';
 import { AppView } from './types.ts';
 import { UI_STRINGS } from './constants.ts';
@@ -24,9 +26,11 @@ interface SidebarProps {
   isOpen: boolean;
   toggle: () => void;
   language: 'EN' | 'TN';
+  onInstall?: () => void;
+  canInstall?: boolean;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, isOpen, toggle, language }) => {
+const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, isOpen, toggle, language, onInstall, canInstall }) => {
   const s = UI_STRINGS[language];
   const [isCopied, setIsCopied] = useState(false);
 
@@ -57,7 +61,6 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, isOpen, toggle,
         console.error('Error sharing:', err);
       }
     } else {
-      // Fallback: Copy to clipboard
       try {
         await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
         setIsCopied(true);
@@ -70,7 +73,6 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, isOpen, toggle,
 
   return (
     <>
-      {/* Overlay for mobile */}
       {isOpen && (
         <div 
           className="fixed inset-0 bg-black/60 z-40 md:hidden backdrop-blur-sm transition-opacity duration-300"
@@ -116,7 +118,18 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, isOpen, toggle,
             );
           })}
 
-          {/* New Share App Menu Item */}
+          {canInstall && (
+            <button
+              onClick={onInstall}
+              className="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl transition-all active:scale-[0.98] mt-2 bg-white/10 text-white hover:bg-white/20 font-bold"
+            >
+              <Download size={20} className="text-[#FFD700]" />
+              <span className={`tracking-wide transition-all ${
+                language === 'TN' ? 'text-[13px]' : 'text-[15px]'
+              }`}>{language === 'TN' ? 'ஆப்பை நிறுவுக' : 'Install App'}</span>
+            </button>
+          )}
+
           <button
             onClick={handleShare}
             className={`

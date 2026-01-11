@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { 
   LayoutDashboard, 
@@ -13,7 +14,8 @@ import {
   CalendarDays,
   Share2,
   Check,
-  Info
+  Info,
+  Download
 } from 'lucide-react';
 import { AppView } from '../types.ts';
 import { UI_STRINGS } from '../constants.ts';
@@ -24,9 +26,12 @@ interface SidebarProps {
   isOpen: boolean;
   toggle: () => void;
   language: 'EN' | 'TN';
+  // Fix: Added missing props for PWA installation functionality
+  onInstall?: () => void | Promise<void>;
+  canInstall?: boolean;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, isOpen, toggle, language }) => {
+const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, isOpen, toggle, language, onInstall, canInstall }) => {
   const s = UI_STRINGS[language];
   const [isCopied, setIsCopied] = useState(false);
 
@@ -115,6 +120,19 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, isOpen, toggle,
               </button>
             );
           })}
+
+          {/* Fix: Added App Install button to the sidebar for better accessibility */}
+          {canInstall && (
+            <button
+              onClick={onInstall}
+              className="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl transition-all active:scale-[0.98] mt-2 bg-white/10 text-white hover:bg-white/20 font-bold"
+            >
+              <Download size={20} className="text-[#FFD700]" />
+              <span className={`tracking-wide transition-all ${
+                language === 'TN' ? 'text-[13px]' : 'text-[15px]'
+              }`}>{language === 'TN' ? 'ஆப்பை நிறுவுக' : 'Install App'}</span>
+            </button>
+          )}
 
           {/* Integrated Share Button */}
           <button

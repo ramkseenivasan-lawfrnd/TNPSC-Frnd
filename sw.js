@@ -1,4 +1,5 @@
-const CACHE_NAME = 'tnpsc-frnd-v4';
+
+const CACHE_NAME = 'tnpsc-frnd-pwa-v1';
 const ASSETS = [
   '/',
   '/index.html',
@@ -10,10 +11,7 @@ const ASSETS = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      // Use addAll but ignore errors for individual files to prevent install failure
-      return Promise.allSettled(
-        ASSETS.map(url => cache.add(url))
-      );
+      return cache.addAll(ASSETS);
     })
   );
   self.skipWaiting();
@@ -35,34 +33,13 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Logic for icons and manifest - try network first, fallback to cache
-  const isStaticAsset = event.request.url.includes('/icons/') || 
-                       event.request.url.includes('manifest.json') ||
-                       event.request.url.includes('favicon.ico');
-
-  if (isStaticAsset) {
-    event.respondWith(
-      fetch(event.request)
-        .then((networkResponse) => {
-          if (networkResponse.ok) {
-            const cacheCopy = networkResponse.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, cacheCopy));
-          }
-          return networkResponse;
-        })
-        .catch(() => caches.match(event.request))
-    );
-  } else {
-    // Default strategy: Cache falling back to network
-    event.respondWith(
-      caches.match(event.request).then((response) => {
-        return response || fetch(event.request).catch(() => {
-          // Fallback for navigation requests when offline
-          if (event.request.mode === 'navigate') {
-            return caches.match('/index.html');
-          }
-        });
-      })
-    );
-  }
+  event.respondWith(
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request).catch(() => {
+        if (event.request.mode === 'navigate') {
+          return caches.match('/index.html');
+        }
+      });
+    })
+  );
 });

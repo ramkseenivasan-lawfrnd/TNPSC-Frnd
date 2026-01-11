@@ -63,6 +63,15 @@ export const UI_STRINGS = {
       agreeConsent: 'நிபந்தனைகள் மற்றும் தனியுரிமைக் கொள்கையை நான் ஏற்றுக்கொள்கிறேன்.',
       contactLink: 'தொடர்பு மற்றும் சட்டப்பூர்வ தகவல்கள்',
       mandatoryConsent: 'தொடர நீங்கள் நிபந்தனைகளை ஏற்க வேண்டும்.'
+    },
+    landing: {
+      heroTitle: 'TNPSC Frnd AI',
+      heroSub: 'உங்கள் அரசுப் பணி கனவு, எங்களின் AI பொறுப்பு.',
+      cta: 'பயிற்சியைத் தொடங்கு',
+      featureHeading: 'புரட்சிகரமான AI அம்சங்கள்',
+      trustHeading: 'நிர்வாகம் மற்றும் சட்டப்பூர்வ தகவல்',
+      trustSub: 'SSLEGALAID CENTER மூலம் அதிகாரப்பூர்வமாக வழங்கப்படுகிறது.',
+      privacyNote: 'உங்கள் தரவுகள் பாதுகாப்பானது. நாங்கள் எதையும் சர்வரில் சேமிப்பதில்லை.'
     }
   },
   EN: {
@@ -116,6 +125,15 @@ export const UI_STRINGS = {
       agreeConsent: 'I agree to the Terms and Privacy Policy.',
       contactLink: 'View Contact & Legal Info',
       mandatoryConsent: 'You must agree to continue.'
+    },
+    landing: {
+      heroTitle: 'TNPSC Frnd AI',
+      heroSub: 'Empowering your Public Service Journey with Precision AI.',
+      cta: 'Go Study Now',
+      featureHeading: 'Advanced AI Features',
+      trustHeading: 'Administration & Legal Info',
+      trustSub: 'Powered by SSLEGALAID CENTER.',
+      privacyNote: '100% Privacy. Your data never leaves your device.'
     }
   }
 };
