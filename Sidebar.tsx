@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   LayoutDashboard, 
@@ -51,7 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, isOpen, toggle,
     const shareData = {
       title: 'TNPSC Frnd',
       text: s.shareText,
-      url: 'https://tnpscfrnd.vercel.app/',
+      url: window.location.origin,
     };
 
     if (navigator.share) {
