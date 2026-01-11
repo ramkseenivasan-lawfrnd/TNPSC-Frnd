@@ -1,11 +1,12 @@
-const CACHE_NAME = 'tnpsc-frnd-cache-v7';
+const CACHE_NAME = 'tnpsc-frnd-cache-v8';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/sw.js',
   '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png'
+  '/icons/icon-512x512.png',
+  'https://cdn.tailwindcss.com',
+  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap'
 ];
 
 self.addEventListener('install', (event) => {
@@ -33,28 +34,34 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  // Skip non-GET requests and chrome extension requests
   if (event.request.method !== 'GET' || event.request.url.startsWith('chrome-extension')) {
     return;
   }
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
+      // Return cached response if available
       if (cachedResponse) {
         return cachedResponse;
       }
-      return fetch(event.request).then((response) => {
-        if (response && response.status === 200 && response.type === 'basic') {
-          const responseToCache = response.clone();
+
+      // Otherwise fetch from network
+      return fetch(event.request).then((fetchResponse) => {
+        // Only cache successful standard responses
+        if (fetchResponse && fetchResponse.status === 200 && fetchResponse.type === 'basic' || event.request.url.startsWith('http')) {
+          const responseToCache = fetchResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
             cache.put(event.request, responseToCache);
           });
         }
-        return response;
-      }).catch(() => {
-        if (event.request.mode === 'navigate') {
-          return caches.match('/index.html');
-        }
+        return fetchResponse;
       });
+    }).catch(() => {
+      // Offline fallback for navigation requests
+      if (event.request.mode === 'navigate') {
+        return caches.match('/index.html');
+      }
     })
   );
 });
