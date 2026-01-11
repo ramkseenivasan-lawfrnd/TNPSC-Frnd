@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Download, X, Sparkles } from 'lucide-react';
+import { Download, X } from 'lucide-react';
 
 interface InstallPromptProps {
   language: 'EN' | 'TN';
@@ -13,12 +12,15 @@ const InstallPrompt: React.FC<InstallPromptProps> = ({ language, onInstall, canI
 
   if (!canInstall || isDismissed) return null;
 
+  // Use the same SVG as the favicon for consistency and to avoid 404s
+  const appIconSvg = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2003/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23003366'/%3E%3Cpath d='M16 8L6 13l10 5 10-5-10-5z' fill='%23FFD700'/%3E%3Cpath d='M10 15v4c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-4' fill='none' stroke='%23FFD700' stroke-width='2'/%3E%3C/svg%3E`;
+
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-2rem)] max-w-md animate-in slide-in-from-bottom-10">
       <div className="bg-[#003366] text-white p-5 rounded-[2rem] shadow-2xl border border-white/10 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-[#FFD700] rounded-xl flex items-center justify-center text-[#003366] shrink-0 overflow-hidden">
-            <img src="/icons/icon-192x192.png" alt="App Icon" className="w-full h-full object-cover" />
+            <img src={appIconSvg} alt="App Icon" className="w-full h-full object-cover" />
           </div>
           <div>
             <h4 className="text-sm font-black uppercase tracking-tight">
