@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tnpsc-frnd-v3';
+const CACHE_NAME = 'tnpsc-frnd-v4';
 const ASSETS = [
   '/',
   '/index.html',
@@ -10,7 +10,10 @@ const ASSETS = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS);
+      // Use addAll but ignore errors for individual files to prevent install failure
+      return Promise.allSettled(
+        ASSETS.map(url => cache.add(url))
+      );
     })
   );
   self.skipWaiting();
@@ -32,23 +35,33 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Logic for icons and manifest - always try cache first, then network
-  if (event.request.url.includes('/icons/') || event.request.url.includes('manifest.json')) {
+  // Logic for icons and manifest - try network first, fallback to cache
+  const isStaticAsset = event.request.url.includes('/icons/') || 
+                       event.request.url.includes('manifest.json') ||
+                       event.request.url.includes('favicon.ico');
+
+  if (isStaticAsset) {
     event.respondWith(
-      caches.match(event.request).then((cachedResponse) => {
-        if (cachedResponse) return cachedResponse;
-        return fetch(event.request).then((networkResponse) => {
-          return caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, networkResponse.clone());
-            return networkResponse;
-          });
-        });
-      })
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse.ok) {
+            const cacheCopy = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, cacheCopy));
+          }
+          return networkResponse;
+        })
+        .catch(() => caches.match(event.request))
     );
   } else {
+    // Default strategy: Cache falling back to network
     event.respondWith(
       caches.match(event.request).then((response) => {
-        return response || fetch(event.request);
+        return response || fetch(event.request).catch(() => {
+          // Fallback for navigation requests when offline
+          if (event.request.mode === 'navigate') {
+            return caches.match('/index.html');
+          }
+        });
       })
     );
   }

@@ -29,11 +29,28 @@
       "purpose": "maskable"
     }
   ],
+  "screenshots": [
+    {
+      "src": "https://raw.githubusercontent.com/GoogleChrome/samples/gh-pages/pwa-screenshots/screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "TNPSC Frnd Dashboard"
+    },
+    {
+      "src": "https://raw.githubusercontent.com/GoogleChrome/samples/gh-pages/pwa-screenshots/screenshot2.png",
+      "sizes": "720x1280",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "AI Preceptor Chat"
+    }
+  ],
   "start_url": "/",
   "display": "standalone",
   "display_override": ["window-controls-overlay", "minimal-ui"],
   "background_color": "#003366",
   "theme_color": "#003366",
   "orientation": "portrait",
-  "scope": "/"
+  "scope": "/",
+  "categories": ["education", "books", "productivity"]
 }

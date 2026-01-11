@@ -1,11 +1,8 @@
 {
+  "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/icons/(.*)",
-      "destination": "/icons/$1"
-    },
-    {
-      "source": "/(.*)",
+      "source": "/((?!icons/|manifest.json|sw.js|favicon.ico|assets/).*)",
       "destination": "/index.html"
     }
   ]
