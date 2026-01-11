@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { AppView } from './types.ts';
 import Dashboard from './components/Dashboard.tsx';
@@ -92,7 +91,6 @@ const App: React.FC = () => {
       case 'saved-answers': return <SavedAnswers language={language} />;
       case 'exams': return <ExamStructure language={language} />;
       case 'syllabus': return <ExamSyllabus language={language} />;
-      // Removed the invalid 'init-study-plan' case as it does not exist in the AppView union type.
       case 'study-plan': return <StudyPlan language={language} />;
       case 'admin-login': return <AdminLogin onLoginSuccess={handleOfficerLogin} setView={handleSetView} />;
       case 'admin-dashboard': return <AdminDashboard onLogout={handleOfficerLogout} />;
@@ -117,6 +115,18 @@ const App: React.FC = () => {
           setLanguage={setLanguage}
           toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
         />
+        
+        {/* Banner Ad Section - Responsive Aspect Ratio */}
+        <div className="px-4 py-3 sm:px-6 lg:px-8 bg-white border-b border-slate-100">
+          <div className="max-w-6xl mx-auto">
+            <div 
+              id="container-e11c6c3115d78d5625791ad00fd6ebc1" 
+              className="w-full aspect-[3/1] sm:aspect-[6/1] lg:aspect-[8/1] min-h-[100px] bg-slate-50 rounded-2xl overflow-hidden flex items-center justify-center text-slate-300 text-[10px] font-black uppercase tracking-[0.2em] border border-slate-100 shadow-sm"
+            >
+              Advertisement
+            </div>
+          </div>
+        </div>
         
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
           <div className="max-w-6xl mx-auto h-full">
