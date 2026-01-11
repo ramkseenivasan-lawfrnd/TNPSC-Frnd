@@ -9,7 +9,7 @@
     <meta name="description" content="AI-powered preparation guide for TNPSC exams. Features PYQ analysis, 2025 question predictions, and a personalized AI tutor.">
     <meta property="og:title" content="TNPSC Frnd - Your AI Exam Preceptor">
     <meta property="og:description" content="Master TNPSC Units 1-10 with AI. Get high-probability question predictions and real-time current affairs.">
-    <meta property="og:image" content="icons/icon-512x512.png">
+    <meta property="og:image" content="/icons/icon-512x512.png">
     <meta property="og:url" content="https://tnpscfrnd.vercel.app/">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
@@ -19,9 +19,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="TNPSC Frnd">
-    <link rel="manifest" href="./manifest.json">
-    <link rel="icon" type="image/png" href="icons/icon-192x192.png">
-    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" type="image/png" href="/icons/icon-192x192.png">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -58,13 +58,12 @@
     <script>
         window.process = window.process || { env: {} };
         
-        // Register Service Worker
+        // Register Service Worker with absolute path
         if ('serviceWorker' in navigator) {
           window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js')
+            navigator.serviceWorker.register('/sw.js')
               .then(reg => {
                 console.log('SW registered');
-                // Check if we need to update
                 reg.onupdatefound = () => {
                   const installingWorker = reg.installing;
                   installingWorker.onstatechange = () => {
@@ -95,6 +94,6 @@
 </head>
 <body>
     <div id="root"></div>
-    <script type="module" src="./index.tsx"></script>
+    <script type="module" src="/index.tsx"></script>
 </body>
 </html>

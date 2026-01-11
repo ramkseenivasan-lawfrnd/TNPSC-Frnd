@@ -1,11 +1,10 @@
-const CACHE_NAME = 'tnpsc-frnd-v2';
+const CACHE_NAME = 'tnpsc-frnd-v3';
 const ASSETS = [
-  './',
-  './index.html',
-  './index.tsx',
-  './manifest.json',
-  './icons/icon-192x192.png',
-  './icons/icon-512x512.png'
+  '/',
+  '/index.html',
+  '/manifest.json',
+  '/icons/icon-192x192.png',
+  '/icons/icon-512x512.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -33,8 +32,8 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Logic for icons and manifest
-  if (event.request.url.includes('icons/') || event.request.url.includes('manifest.json')) {
+  // Logic for icons and manifest - always try cache first, then network
+  if (event.request.url.includes('/icons/') || event.request.url.includes('manifest.json')) {
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {
         if (cachedResponse) return cachedResponse;
