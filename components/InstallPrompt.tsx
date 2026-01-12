@@ -24,10 +24,6 @@ const InstallPrompt: React.FC<InstallPromptProps> = ({ language, onInstall, canI
               src={appIconUrl} 
               alt="App Icon" 
               className="w-full h-full object-cover" 
-              onError={(e) => {
-                // Fallback to a placeholder icon if the PNG is missing
-                e.currentTarget.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2003/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23FFD700'/%3E%3Cpath d='M16 8L6 13l10 5 10-5-10-5z' fill='%23003366'/%3E%3C/svg%3E`;
-              }}
             />
           </div>
           <div>
