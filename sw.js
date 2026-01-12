@@ -1,24 +1,26 @@
-const CACHE_NAME = 'tnpsc-frnd-pwa-v13';
+const CACHE_NAME = 'tnpsc-frnd-v15';
 const ASSETS_TO_CACHE = [
-  '/',
   '/index.html',
   '/manifest.json'
 ];
 
 self.addEventListener('install', (event) => {
-  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    }).catch(err => console.warn('PWA: Pre-cache failed', err))
+      // Use individual add for each to prevent one failure from breaking everything
+      return Promise.allSettled(
+        ASSETS_TO_CACHE.map(url => cache.add(url))
+      );
+    })
   );
+  self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
+    caches.keys().then((keys) => {
       return Promise.all(
-        cacheNames.filter(name => name !== CACHE_NAME).map(name => caches.delete(name))
+        keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
       );
     })
   );
@@ -27,27 +29,16 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
-  
+
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) return cachedResponse;
-      
+    caches.match(event.request).then((cached) => {
+      if (cached) return cached;
       return fetch(event.request).then((response) => {
         if (!response || response.status !== 200 || response.type !== 'basic') {
           return response;
         }
-
-        // Avoid caching external ads or search APIs to prevent bloat/errors
-        const url = event.request.url;
-        if (url.includes('google') || url.includes('effectivegatecpm')) {
-          return response;
-        }
-
-        const responseToCache = response.clone();
-        caches.open(CACHE_NAME).then((cache) => {
-          cache.put(event.request, responseToCache);
-        });
-
+        const toCache = response.clone();
+        caches.open(CACHE_NAME).then(c => c.put(event.request, toCache));
         return response;
       }).catch(() => {
         if (event.request.mode === 'navigate') {
