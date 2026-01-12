@@ -2,7 +2,7 @@
   "version": 2,
   "rewrites": [
     {
-      "source": "/(sw.js|manifest.json|favicon/.*|icons/.*)",
+      "source": "/(sw.js|manifest.json)",
       "destination": "/$1"
     },
     {

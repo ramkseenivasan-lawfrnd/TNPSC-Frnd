@@ -12,8 +12,8 @@ const InstallPrompt: React.FC<InstallPromptProps> = ({ language, onInstall, canI
 
   if (!canInstall || isDismissed) return null;
 
-  // Use the standard icon from the icons folder starting from root
-  const appIconUrl = '/icons/icon-192x192.png';
+  // Use the standard icon from the CDN
+  const appIconUrl = 'https://www.gstatic.com/images/branding/product/1x/education_192dp.png';
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[calc(100%-2rem)] max-w-md animate-in slide-in-from-bottom-10">
