@@ -2,9 +2,9 @@ const CACHE_NAME = 'tnpsc-frnd-cache-v8';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
-  '/manifest.json',
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png',
+  '/public/manifest.json',
+  '/public/icons/icon-192x192.png',
+  '/public/icons/icon-512x512.png',
   'https://cdn.tailwindcss.com',
   'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:wght@400;700&display=swap'
 ];
