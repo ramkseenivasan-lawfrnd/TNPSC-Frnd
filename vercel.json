@@ -3,19 +3,19 @@
   "rewrites": [
     {
       "source": "/manifest.json",
-      "destination": "/public/manifest.json"
+      "destination": "/manifest.json"
     },
     {
       "source": "/sw.js",
-      "destination": "/public/sw.js"
+      "destination": "/sw.js"
     },
     {
       "source": "/icons/(.*)",
-      "destination": "/public/icons/$1"
+      "destination": "/icons/$1"
     },
     {
       "source": "/favicon/(.*)",
-      "destination": "/public/favicon/$1"
+      "destination": "/favicon/$1"
     },
     {
       "source": "/(.*)",
