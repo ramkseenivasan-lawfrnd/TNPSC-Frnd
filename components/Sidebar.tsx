@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   LayoutDashboard, 
@@ -72,6 +71,8 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, isOpen, toggle,
     }
   };
 
+  const appIconUrl = 'https://api.dicebear.com/9.x/initials/png?seed=TNPSC+Frnd&backgroundColor=003366&fontColor=FFD700&fontSize=40&size=64';
+
   return (
     <>
       {/* Overlay for mobile */}
@@ -90,6 +91,9 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, isOpen, toggle,
       `}>
         <div className="p-6 flex items-center justify-between border-b border-white/10 shrink-0">
           <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-[#FFD700] rounded-xl flex items-center justify-center p-0.5 shadow-lg overflow-hidden shrink-0">
+              <img src={appIconUrl} alt="Logo" className="w-full h-full object-cover rounded-lg" />
+            </div>
             <h1 className="text-xl font-bold tracking-tight">TNPSC Frnd</h1>
           </div>
           <button onClick={toggle} className="md:hidden p-2 hover:bg-white/10 rounded-full transition-colors">

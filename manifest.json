@@ -10,25 +10,25 @@
   "orientation": "portrait",
   "icons": [
     {
-      "src": "https://api.dicebear.com/7.x/initials/png?seed=TN&backgroundColor=FFD700&fontSize=40&size=192",
+      "src": "https://api.dicebear.com/9.x/initials/png?seed=TNPSC+Frnd&backgroundColor=003366&fontColor=FFD700&fontSize=40&size=192",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://api.dicebear.com/7.x/initials/png?seed=TN&backgroundColor=FFD700&fontSize=40&size=192",
+      "src": "https://api.dicebear.com/9.x/initials/png?seed=TNPSC+Frnd&backgroundColor=003366&fontColor=FFD700&fontSize=40&size=192",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "https://api.dicebear.com/7.x/initials/png?seed=TN&backgroundColor=FFD700&fontSize=40&size=512",
+      "src": "https://api.dicebear.com/9.x/initials/png?seed=TNPSC+Frnd&backgroundColor=003366&fontColor=FFD700&fontSize=40&size=512",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "https://api.dicebear.com/7.x/initials/png?seed=TN&backgroundColor=FFD700&fontSize=40&size=512",
+      "src": "https://api.dicebear.com/9.x/initials/png?seed=TNPSC+Frnd&backgroundColor=003366&fontColor=FFD700&fontSize=40&size=512",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
