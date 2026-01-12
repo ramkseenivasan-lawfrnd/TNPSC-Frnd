@@ -1,8 +1,13 @@
 {
-  "id": "/",
+  "id": "tnpsc-frnd-pwa",
   "name": "TNPSC Frnd",
-  "short_name": "Tnpsc Frnd",
-  "description": "AI-powered preparation guide for TNPSC exams with PYQ analysis and 2026 predictions.",
+  "short_name": "TNPSC Frnd",
+  "description": "AI-powered TNPSC exam preparation guide.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#003366",
+  "theme_color": "#003366",
+  "orientation": "portrait",
   "icons": [
     {
       "src": "/icons/icon-192x192.png",
@@ -28,10 +33,5 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ],
-  "start_url": "/",
-  "display": "standalone",
-  "background_color": "#003366",
-  "theme_color": "#003366",
-  "orientation": "portrait"
+  ]
 }
