@@ -16,9 +16,9 @@ import ContactUs from './components/ContactUs.tsx';
 import Sidebar from './components/Sidebar.tsx';
 import Header from './components/Header.tsx';
 import OfflineOverlay from './components/OfflineOverlay.tsx';
-import InstallPrompt from './components/InstallPrompt.tsx';
 import Onboarding from './components/Onboarding.tsx';
 import LandingPage from './components/LandingPage.tsx';
+import InstallPrompt from './components/InstallPrompt.tsx';
 
 const App: React.FC = () => {
   const [view, setView] = useState<AppView>('dashboard');
@@ -28,7 +28,10 @@ const App: React.FC = () => {
   const [isOfficerLoggedIn, setIsOfficerLoggedIn] = useState(false);
   const [showLanding, setShowLanding] = useState(false);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  
+  // PWA Install State
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [showInstallBtn, setShowInstallBtn] = useState(false);
 
   useEffect(() => {
     // Check first-time setup
@@ -43,16 +46,18 @@ const App: React.FC = () => {
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
+    // PWA Install Event
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setShowInstallBtn(true);
+    };
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
     const handleSwitchView = (e: any) => {
       setView(e.detail);
     };
     window.addEventListener('switch-view', handleSwitchView);
-
-    const handleBeforeInstallPrompt = (e: any) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-    };
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
     const loginStatus = sessionStorage.getItem('tnpsc_officer_logged_in');
     if (loginStatus === 'true') {
@@ -62,10 +67,21 @@ const App: React.FC = () => {
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
-      window.removeEventListener('switch-view', handleSwitchView);
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+      window.removeEventListener('switch-view', handleSwitchView);
     };
   }, []);
+
+  const handleInstall = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      console.log('User accepted the install prompt');
+    }
+    setDeferredPrompt(null);
+    setShowInstallBtn(false);
+  };
 
   const handleStartOnboarding = () => {
     setShowLanding(false);
@@ -97,15 +113,6 @@ const App: React.FC = () => {
     }
     setView(newView);
     setIsSidebarOpen(false);
-  };
-
-  const handleInstall = async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      setDeferredPrompt(null);
-    }
   };
 
   const checkConnectivity = () => {
@@ -149,6 +156,12 @@ const App: React.FC = () => {
         />
       )}
       
+      <InstallPrompt 
+        language={language} 
+        onInstall={handleInstall} 
+        canInstall={showInstallBtn} 
+      />
+      
       <Sidebar 
         currentView={view} 
         setView={handleSetView} 
@@ -156,7 +169,7 @@ const App: React.FC = () => {
         toggle={() => setIsSidebarOpen(!isSidebarOpen)} 
         language={language}
         onInstall={handleInstall}
-        canInstall={!!deferredPrompt}
+        canInstall={showInstallBtn}
       />
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden h-full">
@@ -187,8 +200,6 @@ const App: React.FC = () => {
           </div>
         </div>
       </div>
-
-      <InstallPrompt language={language} onInstall={handleInstall} canInstall={!!deferredPrompt} />
     </div>
   );
 };

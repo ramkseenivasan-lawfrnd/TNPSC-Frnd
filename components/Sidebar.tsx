@@ -26,8 +26,7 @@ interface SidebarProps {
   isOpen: boolean;
   toggle: () => void;
   language: 'EN' | 'TN';
-  // Fix: Added missing props for PWA installation functionality
-  onInstall?: () => void | Promise<void>;
+  onInstall?: () => void;
   canInstall?: boolean;
 }
 
@@ -52,7 +51,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, isOpen, toggle,
     const shareData = {
       title: 'TNPSC Frnd',
       text: s.shareText,
-      url: 'https://tnpscfrnd.vercel.app/',
+      url: window.location.origin,
     };
 
     if (navigator.share) {
@@ -121,7 +120,6 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setView, isOpen, toggle,
             );
           })}
 
-          {/* Fix: Added App Install button to the sidebar for better accessibility */}
           {canInstall && (
             <button
               onClick={onInstall}
